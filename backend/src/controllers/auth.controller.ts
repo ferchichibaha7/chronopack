@@ -5,7 +5,7 @@ import HttpStatusCodes from "http-status-codes";
 import Payload from "../types/Payload";
 import _ from "underscore";
 import jwt from "jsonwebtoken";
-import { Role } from "../models/Role";
+import { Op } from "sequelize";
 
 export class authController {
   constructor() {}
@@ -24,46 +24,63 @@ export class authController {
 
   public async signup(...params) {
     const [req, res, next] = params;
+console.log(req);
 
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res
-        .status(HttpStatusCodes.BAD_REQUEST)
-        .json({ errors: errors.array() });
-    }
-
-    const {
-      name,
-      password
-    } = req.body;
     try {
-     
-        let user = await User.findOne({ where: { name: name } });
-        if (user) {
-          return res.status(HttpStatusCodes.BAD_REQUEST).json({
-            errors: [
-              {
-                msg: "name already used",
-              },
-            ],
-          });
-     
+      // Validate user input
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(HttpStatusCodes.BAD_REQUEST).json({ errors: errors.array() });
       }
-
-      const salt = await bcrypt.genSalt(10);
-      const hashed = await bcrypt.hash(password, salt);
-
-      await User.create({
-        name: name,
-        password: hashed,
-        role_id:2 // Normal User
+  
+      // Extract user data from request body
+      const { username, email, password, userType,centerId } = req.body;
+  
+      // Check for existing user with the same username or email
+      const existingUser = await User.findOne({
+        where: {
+          [Op.or]: [
+            { username },
+            { email },
+          ],
+        },
       });
-      res.json({ message: "User Registered" });
-    } catch (err) {
+      if (existingUser) {
+        return res.status(HttpStatusCodes.BAD_REQUEST).json({
+          errors: [
+            existingUser.username === username ? { msg: "Username already in use" } : null,
+            existingUser.email === email ? { msg: "Email already in use" } : null,
+          ].filter(Boolean), // Remove null elements
+        });
+      }
+  
+      // Hash the password securely
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
 
-      console.log(err);
-      
-      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send("Server Error");
+      let profilePictureBuffer: Buffer | null = null;
+
+      // Check if profile picture is uploaded
+      if (req.file) {
+          profilePictureBuffer = req.file.buffer; // Assuming multer middleware saves the file as a buffer
+      }
+  
+      // Create a new user with default inactive status
+      const newUser = await User.create({
+        username,
+        email,
+        password: hashedPassword,
+        active: false, // Default to inactive
+        userType, // Optional: set userType from request body
+        centerId: centerId || null, // Set to null if not provided
+        profilePicture: profilePictureBuffer // Assign profile picture buffer
+      });
+  
+      // Send a success response
+      res.status(HttpStatusCodes.CREATED).json({ message: "User registered successfully." });
+    } catch (err) {
+      console.error(err);
+      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Server error" });
     }
   }
 

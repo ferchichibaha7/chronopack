@@ -6,34 +6,12 @@ import bcrypt from "bcryptjs";
 import { sequelize, connectAuthenticate } from "../config/database";
 import user from "./routes/api/user";
 import auth from "./routes/api/auth";
-import { Role } from "./models/Role";
 
 const app = express();
 
 // Connect to DB
 connectAuthenticate();
 sequelize.sync({logging:false}).then(async res=>{
-  try {
-    // Check for roles
-    let adminRole;
-    if(!(adminRole = await Role.findOne({where: {name: 'admin'}}))) {
-      adminRole = await Role.create({
-        id: 1, 
-        name: 'admin'
-      });
-    }
-    let userRole;
-    if(!(userRole = await Role.findOne({where: {name: 'user'}}))) {
-  
-      userRole = await Role.create({
-        id: 2,
-        name: 'user' 
-      });
-    }
-    console.log("Roles Checked!");
-  } catch (err) {
-    console.error("Error inserting defaults", err);
-  }
   console.log("Sync done");
 });
 

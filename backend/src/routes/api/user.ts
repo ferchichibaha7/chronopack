@@ -2,7 +2,6 @@ import { userController } from '../../controllers/user.controller';
 import { Router } from "express";
 import { check } from "express-validator/check";
 import auth from '../../middleware/auth';
-import admin from '../../middleware/admin';
 
 
 const router = Router();
@@ -13,9 +12,9 @@ const validateOptions =   [
 ];
 
 router.get( "/list",auth,(...params) => ctrl.findAllUsers(...params));
-router.delete( "/delete/:id",auth,admin,(...params) => ctrl.deleteUser(...params));
-router.get( "/:id",auth,admin,(...params) => ctrl.findOneUser(...params));
-router.put( "/:id",auth,admin,validateOptions,(...params) => ctrl.updateUser(...params));
+router.delete( "/delete/:id",auth,(...params) => ctrl.deleteUser(...params));
+router.get( "/:id",auth,(...params) => ctrl.findOneUser(...params));
+router.put( "/:id",auth,validateOptions,(...params) => ctrl.updateUser(...params));
 
 
 export default router;
