@@ -24,7 +24,6 @@ export class authController {
 
   public async signup(...params) {
     const [req, res, next] = params;
-console.log(req);
 
     try {
       // Validate user input
@@ -57,14 +56,6 @@ console.log(req);
       // Hash the password securely
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
-
-      let profilePictureBuffer: Buffer | null = null;
-
-      // Check if profile picture is uploaded
-      if (req.file) {
-          profilePictureBuffer = req.file.buffer; // Assuming multer middleware saves the file as a buffer
-      }
-  
       // Create a new user with default inactive status
       const newUser = await User.create({
         username,
@@ -73,7 +64,6 @@ console.log(req);
         active: false, // Default to inactive
         userType, // Optional: set userType from request body
         centerId: centerId || null, // Set to null if not provided
-        profilePicture: profilePictureBuffer // Assign profile picture buffer
       });
   
       // Send a success response

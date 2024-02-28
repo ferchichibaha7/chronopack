@@ -23,9 +23,6 @@ export class User extends Model {
   @Column
   userType: string; // "admin", "manager", "courier", "store", etc.
 
-  @Column({ type: 'BLOB', allowNull: true }) // New column for storing image data
-  profilePicture: Buffer; // Change the type to Buffer to store binary data
-
   @ForeignKey(() => Center)
   @Column({ allowNull: true })
   centerId: number;
