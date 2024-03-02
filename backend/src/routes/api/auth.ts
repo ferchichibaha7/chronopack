@@ -15,7 +15,9 @@ const validateLogin =   [
 ];
 
 
-router.post( "/signup",(...params) => ctrl.signup(...params));
+router.post( "/create/admin",(...params) => ctrl.createAdmin(...params));
+router.post( "/create/manager",(...params) => ctrl.createManager(...params));
+
 router.post( "/login",validateLogin,(...params) => ctrl.login(...params));
 router.get("/current",auth,(...params) => ctrl.currentUser(...params) );
 

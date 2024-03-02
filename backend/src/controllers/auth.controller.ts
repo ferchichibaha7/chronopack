@@ -6,6 +6,7 @@ import Payload from "../types/Payload";
 import _ from "underscore";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
+import { Role } from "../models/Role";
 
 export class authController {
   constructor() {}
@@ -22,7 +23,7 @@ export class authController {
   
   };
 
-  public async signup(...params) {
+  public createAdmin = async (...params) => {
     const [req, res, next] = params;
 
     try {
@@ -31,10 +32,10 @@ export class authController {
       if (!errors.isEmpty()) {
         return res.status(HttpStatusCodes.BAD_REQUEST).json({ errors: errors.array() });
       }
-  
+
       // Extract user data from request body
-      const { username, email, password, roleId,depotId } = req.body;
-  
+      const { username, email, password, depotId } = req.body;
+
       // Check for existing user with the same username or email
       const existingUser = await User.findOne({
         where: { username: username } as any
@@ -44,30 +45,79 @@ export class authController {
           errors: [
             existingUser.username === username ? { msg: "Username already in use" } : null,
             existingUser.email === email ? { msg: "Email already in use" } : null,
-          ].filter(Boolean), // Remove null elements
+          ].filter(Boolean),
         });
       }
-  
+      const adminRole = await Role.findOne({ where: { role_name: 'Admin' } as any });
       // Hash the password securely
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
-      // Create a new user with default inactive status
-      const newUser =   await User.create({
+
+      // Create a new admin user
+      const newUser = await User.create({
         username: username,
         email: email,
         password: hashedPassword,
-        role_id: roleId,
-        depot_id: depotId,
+        role_id: adminRole.role_id, // Assuming 'admin' is the role ID for admin users
         // Add other properties here if needed
       });
-  
+
       // Send a success response
-      res.status(HttpStatusCodes.CREATED).json({ message: "User registered successfully." });
+      res.status(HttpStatusCodes.CREATED).json({ message: "Admin user created successfully." });
     } catch (err) {
       console.error(err);
       res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Server error" });
     }
-  }
+  };
+
+  public createManager = async (...params) => {
+    const [req, res, next] = params;
+
+    try {
+      // Validate user input
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(HttpStatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+      }
+
+      // Extract user data from request body
+      const { username, email, password, depotId } = req.body;
+
+      // Check for existing user with the same username or email
+      const existingUser = await User.findOne({
+        where: { username: username } as any
+      });
+      if (existingUser) {
+        return res.status(HttpStatusCodes.BAD_REQUEST).json({
+          errors: [
+            existingUser.username === username ? { msg: "Username already in use" } : null,
+            existingUser.email === email ? { msg: "Email already in use" } : null,
+          ].filter(Boolean),
+        });
+      }
+      const adminRole = await Role.findOne({ where: { role_name: 'Manager' } as any });
+      // Hash the password securely
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      // Create a new admin user
+      const newUser = await User.create({
+        username: username,
+        email: email,
+        password: hashedPassword,
+        role_id: adminRole.role_id,
+        depot_id:depotId
+     
+      });
+
+      // Send a success response
+      res.status(HttpStatusCodes.CREATED).json({ message: "Manager user created successfully." });
+    } catch (err) {
+      console.error(err);
+      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Server error" });
+    }
+  };
+
 
 
   public login = async (...params) => {
