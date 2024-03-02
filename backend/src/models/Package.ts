@@ -1,56 +1,64 @@
-import { Table, Column, Model, ForeignKey, BelongsTo } from 'sequelize-typescript';
-import { User } from './User'; // Assuming User model is defined
-import { Status } from './Status'; // Assuming Status model is defined
-import { DeliveryGroup } from './DeliveryGroup';
+import { Table, Column, Model, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Status } from './Status';
+import { ReturnReason } from './ReturnReason';
+import { Depot } from './Depot';
+import { User } from './User';
 
 @Table
-export class Package extends Model {
+export class Package extends Model<Package> {
+  @PrimaryKey
+  @AutoIncrement
   @Column
-  senderName: string;
+  package_id: number;
 
   @Column
-  senderAddress: string;
-
-  @Column
-  recipientName: string;
-
-  @Column
-  recipientAddress: string;
+  description: string;
 
   @Column
   weight: number;
 
   @Column
-  dimensions: string;
-
-  @Column
-  specialInstructions?: string; // Optional special instructions for handling
-
-  @Column
   price: number;
 
-  @ForeignKey(() => User)
   @Column
-  senderId: number;
+  sender_id: number;
 
-  @BelongsTo(() => User, { foreignKey: 'senderId' })
-  sender: User;
-
-  @ForeignKey(() => DeliveryGroup)
   @Column
-  deliveryGroupId: number;
+  receiver_name: string;
 
-  @BelongsTo(() => DeliveryGroup)
-  deliveryGroup: DeliveryGroup;
+  @Column
+  receiver_address: string;
+
+  @Column
+  receiver_contact_info: string;
 
   @ForeignKey(() => Status)
   @Column
-  statusId: number;
+  status_id: number;
+
+  @ForeignKey(() => ReturnReason)
+  @Column
+  reason_id: number;
+
+  @ForeignKey(() => Depot)
+  @Column
+  depot_id: number;
+
+  @Column
+  delivery_cost: number;
+
+  @Column
+  is_paid: boolean;
 
   @BelongsTo(() => Status)
   status: Status;
 
-   @Column({ allowNull: true })
-   returnReason: string; // Replace with "string" if no specific types are needed
- 
+  @BelongsTo(() => ReturnReason)
+  reason: ReturnReason;
+
+  @BelongsTo(() => Depot)
+  depot: Depot;
+
+  @BelongsTo(() => User, { foreignKey: 'sender_id', as: 'sender' })
+  sender: User;
 }

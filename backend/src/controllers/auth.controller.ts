@@ -15,6 +15,8 @@ export class authController {
 
     try {
       let user   = req.currentUser
+      console.log(user);
+      
       res.json({ message: "User retrieved", result: user  })
     } catch (err) {
       res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send("Server Error");
@@ -33,16 +35,11 @@ export class authController {
       }
   
       // Extract user data from request body
-      const { username, email, password, userType,centerId } = req.body;
+      const { username, email, password, roleId,depotId } = req.body;
   
       // Check for existing user with the same username or email
       const existingUser = await User.findOne({
-        where: {
-          [Op.or]: [
-            { username },
-            { email },
-          ],
-        },
+        where: { username: username } as any
       });
       if (existingUser) {
         return res.status(HttpStatusCodes.BAD_REQUEST).json({
@@ -57,13 +54,13 @@ export class authController {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
       // Create a new user with default inactive status
-      const newUser = await User.create({
-        username,
-        email,
+      const newUser =   await User.create({
+        username: username,
+        email: email,
         password: hashedPassword,
-        active: false, // Default to inactive
-        userType, // Optional: set userType from request body
-        centerId: centerId || null, // Set to null if not provided
+        role_id: roleId,
+        depot_id: depotId,
+        // Add other properties here if needed
       });
   
       // Send a success response
@@ -74,6 +71,7 @@ export class authController {
     }
   }
 
+
   public login = async (...params) => {
     const [req, res, next] = params;
     const errors = validationResult(req);
@@ -83,10 +81,10 @@ export class authController {
         .json({ errors: errors.array() });
     }
 
-    const { name, password } = req.body;
+    const { username, password } = req.body;
     try {
       let user = {};
-          user = await User.findOne({ where:{ name : name }});
+          user = await User.findOne({ where:{ username : username } as any});
       if (!user) {
         return res.status(HttpStatusCodes.BAD_REQUEST).json({
           errors: [
@@ -128,5 +126,5 @@ export class authController {
     }
   
   };
- 
+  
 }

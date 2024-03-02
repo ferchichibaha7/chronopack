@@ -7,6 +7,20 @@ export class userController {
   constructor() {}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+  
+/*
   public updateUser = (...params) => {
     const [req, res, next] = params;
     const { id } = req.params;
@@ -17,13 +31,13 @@ export class userController {
         .json({ errors: errors.array() });
     }
     const {
-      name,
+      username,
       password
   
     } = req.body;
     User.findOne({
       where: {
-        [Op.or]: [{ name: name }, { id: id }],
+        [Op.or]: [{ username: username }, { id: id }],
       },
     })
       .then(async (user) => {
@@ -42,7 +56,9 @@ export class userController {
         res.status(500).send({ error: "name already used" });
       });
   };
+*/
 
+/*
   public findAllUsers = (...params) => {
     const [req, res, next] = params;
 
@@ -60,7 +76,9 @@ export class userController {
       res.json({ message: "User retrieved", result: user })
     );
   };
+*/
 
+/*
   public deleteUser = (...params) => {
     const [req, res, next] = params;
     const { id } = req.params;
@@ -68,4 +86,5 @@ export class userController {
       res.json({ message: `User ${id} deleted` });
     });
   };
+  */
 }

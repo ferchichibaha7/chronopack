@@ -1,8 +1,9 @@
 import { Table, Column, Model, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo } from 'sequelize-typescript';
-import { Center } from './Center'; // Assuming Center model is defined
+import { Role } from './Role';
+import { Depot } from './Depot';
 
 @Table
-export class User extends Model {
+export class User extends Model<User> {
   @PrimaryKey
   @AutoIncrement
   @Column
@@ -15,18 +16,22 @@ export class User extends Model {
   email: string;
 
   @Column
-  password: string; // Hashed password
+  password: string; // Assuming the password is hashed
 
   @Column({ allowNull: false, defaultValue: true })
   active: boolean; // User activation status
 
+  @ForeignKey(() => Role)
   @Column
-  userType: string; // "admin", "manager", "courier", "store", etc.
+  role_id: number;
 
-  @ForeignKey(() => Center)
-  @Column({ allowNull: true })
-  centerId: number;
+  @ForeignKey(() => Depot)
+  @Column
+  depot_id: number;
 
-  @BelongsTo(() => Center)
-  center: Center;
+  @BelongsTo(() => Role)
+  role: Role;
+
+  @BelongsTo(() => Depot)
+  depot: Depot;
 }

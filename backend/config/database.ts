@@ -1,11 +1,13 @@
 import dotenv from "dotenv";
 import { Sequelize } from 'sequelize-typescript'
 import { User } from "../src/models/User";
-import { PackageHistory } from "../src/models/PackageHistory";
-import { Center } from "../src/models/Center";
-import { DeliveryGroup } from "../src/models/DeliveryGroup";
 import { Package } from "../src/models/Package";
 import { Status } from "../src/models/Status";
+import { Depot } from "../src/models/Depot";
+import { PackageStateHistory } from "../src/models/PackageStateHistory";
+import { Permission } from "../src/models/Permission";
+import { ReturnReason } from "../src/models/ReturnReason";
+import { Role } from "../src/models/Role";
 dotenv.config();
 const pg_db = process.env.PG_DB;
 const pg_user = process.env.PG_USER;
@@ -17,7 +19,7 @@ const sequelize = new Sequelize({
   username: pg_user,
   password: pg_pass,
   logging:false,
-  models: [User, Center, DeliveryGroup, Package, Status,PackageHistory], // Include all models
+  models: [User,Depot ,PackageStateHistory ,Permission,ReturnReason, Package,Role, Status], // Include all models
 })
 
 const connectAuthenticate = () => {

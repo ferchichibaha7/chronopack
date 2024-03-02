@@ -17,7 +17,7 @@ const validateLogin =   [
 
 router.post( "/signup",(...params) => ctrl.signup(...params));
 router.post( "/login",validateLogin,(...params) => ctrl.login(...params));
-router.get("/current", auth,(...params) => ctrl.currentUser(...params) );
+router.get("/current",auth,(...params) => ctrl.currentUser(...params) );
 
 
 export default router;
