@@ -107,7 +107,6 @@ export class authController {
         password: hashedPassword,
         role_id: adminRole.role_id,
         depot_id:depotId
-     
       });
 
       // Send a success response
@@ -118,7 +117,143 @@ export class authController {
     }
   };
 
+  public createMagasinier = async (...params) => {
+    const [req, res, next] = params;
 
+    try {
+      // Validate user input
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(HttpStatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+      }
+
+      // Extract user data from request body
+      const { username, email, password, depotId } = req.body;
+
+      // Check for existing user with the same username or email
+      const existingUser = await User.findOne({
+        where: { username: username } as any
+      });
+      if (existingUser) {
+        return res.status(HttpStatusCodes.BAD_REQUEST).json({
+          errors: [
+            existingUser.username === username ? { msg: "Username already in use" } : null,
+          ].filter(Boolean),
+        });
+      }
+      const adminRole = await Role.findOne({ where: { role_name: 'Magasinier' } as any });
+      // Hash the password securely
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      // Create a new admin user
+      const newUser = await User.create({
+        username: username,
+        email: email,
+        password: hashedPassword,
+        role_id: adminRole.role_id,
+        depot_id:depotId
+      });
+
+      // Send a success response
+      res.status(HttpStatusCodes.CREATED).json({ message: "Magasinier user created successfully." });
+    } catch (err) {
+      console.error(err);
+      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Server error" });
+    }
+  };
+
+  public createCoursier = async (...params) => {
+    const [req, res, next] = params;
+
+    try {
+      // Validate user input
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(HttpStatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+      }
+
+      // Extract user data from request body
+      const { username, email, password, depotId } = req.body;
+
+      // Check for existing user with the same username or email
+      const existingUser = await User.findOne({
+        where: { username: username } as any
+      });
+      if (existingUser) {
+        return res.status(HttpStatusCodes.BAD_REQUEST).json({
+          errors: [
+            existingUser.username === username ? { msg: "Username already in use" } : null,
+          ].filter(Boolean),
+        });
+      }
+      const adminRole = await Role.findOne({ where: { role_name: 'Coursier' } as any });
+      // Hash the password securely
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      // Create a new admin user
+      const newUser = await User.create({
+        username: username,
+        email: email,
+        password: hashedPassword,
+        role_id: adminRole.role_id,
+        depot_id:depotId
+      });
+
+      // Send a success response
+      res.status(HttpStatusCodes.CREATED).json({ message: "Coursier user created successfully." });
+    } catch (err) {
+      console.error(err);
+      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Server error" });
+    }
+  };
+
+  public createFournisseur = async (...params) => {
+    const [req, res, next] = params;
+
+    try {
+      // Validate user input
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(HttpStatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+      }
+
+      // Extract user data from request body
+      const { username, email, password, depotId } = req.body;
+
+      // Check for existing user with the same username or email
+      const existingUser = await User.findOne({
+        where: { username: username } as any
+      });
+      if (existingUser) {
+        return res.status(HttpStatusCodes.BAD_REQUEST).json({
+          errors: [
+            existingUser.username === username ? { msg: "Username already in use" } : null,
+          ].filter(Boolean),
+        });
+      }
+      const adminRole = await Role.findOne({ where: { role_name: 'Fournisseur' } as any });
+      // Hash the password securely
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      // Create a new admin user
+      const newUser = await User.create({
+        username: username,
+        email: email,
+        password: hashedPassword,
+        role_id: adminRole.role_id,
+        depot_id:depotId
+      });
+
+      // Send a success response
+      res.status(HttpStatusCodes.CREATED).json({ message: "Fournisseur user created successfully." });
+    } catch (err) {
+      console.error(err);
+      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Server error" });
+    }
+  };
 
   public login = async (...params) => {
     const [req, res, next] = params;

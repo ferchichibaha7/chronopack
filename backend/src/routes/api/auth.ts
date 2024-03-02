@@ -17,6 +17,9 @@ const validateLogin =   [
 
 router.post( "/create/admin",(...params) => ctrl.createAdmin(...params));
 router.post( "/create/manager",(...params) => ctrl.createManager(...params));
+router.post( "/create/magasinier",(...params) => ctrl.createMagasinier(...params));
+router.post( "/create/coursier",(...params) => ctrl.createCoursier(...params));
+router.post( "/create/fournisseur",(...params) => ctrl.createFournisseur(...params));
 
 router.post( "/login",validateLogin,(...params) => ctrl.login(...params));
 router.get("/current",auth,(...params) => ctrl.currentUser(...params) );
