@@ -15,8 +15,6 @@ export class authController {
 
     try {
       let user   = req.currentUser
-      console.log(user);
-      
       res.json({ message: "User retrieved", result: user  })
     } catch (err) {
       res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send("Server Error");
