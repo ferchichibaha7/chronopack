@@ -3,11 +3,14 @@ import { RouterModule, Routes } from '@angular/router';
 import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
 import { PackagesComponent } from './pages/admin/packages/packages.component';
+import { AuthGuard } from './auth/guards/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: FullComponent,
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
     children: [
       {
         path: '',
@@ -55,6 +58,8 @@ const routes: Routes = [
       },
     ],
   },
+   // Wildcard route to redirect undefined routes to home
+   { path: '**', redirectTo: '' }
 ];
 
 @NgModule({
