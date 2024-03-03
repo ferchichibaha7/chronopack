@@ -1,14 +1,15 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import {  Observable, of, switchMap } from 'rxjs';
+import {  BehaviorSubject, Observable, of, switchMap } from 'rxjs';
 import { AuthUtils } from './auth.utils';
 
 @Injectable({providedIn: 'root'})
 export class AuthService
 {
     private _authenticated: boolean = false;
-
+    private userDataSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+    public userData$: Observable<any> = this.userDataSubject.asObservable();
     /**
      * Constructor
      */
@@ -59,6 +60,10 @@ export class AuthService
         this.accessToken = response.token;
         // Set the authenticated flag to true
         this._authenticated = true;
+          // Fetch user data here
+          this.fetchUserData().subscribe(userData => {
+            this.userDataSubject.next(userData.result);
+          });
         }
         return of(response);
         })
@@ -77,6 +82,24 @@ export class AuthService
         // Return the observable
         return of(true);
     }
+
+     fetchUserData(): Observable<any> {
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${this.accessToken}`
+      });
+      // Assuming you have an endpoint to fetch user data
+      return this._httpClient.get(`http://localhost:5000/api/auth/current`, { headers });
+    }
+
+    getUserData(): Observable<any> {
+      return this.userData$;
+    }
+
+    setUserData(userData: any): void {
+      this.userDataSubject.next(userData);
+    }
+
+
 
     /**
      * Check the authentication status

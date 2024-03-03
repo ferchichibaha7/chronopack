@@ -13,7 +13,6 @@ const MONITOR_VIEW = 'screen and (min-width: 1024px)';
   styleUrls: [],
 })
 export class FullComponent implements OnInit {
-
   @ViewChild('leftsidenav')
   public sidenav: MatSidenav;
 

@@ -36,22 +36,19 @@
       matBadgeColor="primary"
     ></i-tabler>
   </button>
-  <button
+  <button class="ml-4"
     mat-icon-button
     [matMenuTriggerFor]="profilemenu"
     aria-label="Notifications"
   >
-    <img
-      src="/assets/images/profile/user-1.jpg"
-      class="rounded-circle object-cover"
-      width="35"
-    />
+  <mat-icon
+  ><i-tabler name="user" class="icon-24 d-flex"></i-tabler></mat-icon>
   </button>
   <mat-menu #profilemenu="matMenu" class="topbar-dd cardWithShadow">
-    <button mat-menu-item>
+    <button *ngIf="userData && userData.username" mat-menu-item>
       <mat-icon class="d-flex align-items-center"
         ><i-tabler name="user" class="icon-18 d-flex"></i-tabler></mat-icon
-      >My Profile
+      >{{userData.username}}
     </button>
     <button mat-menu-item>
       <mat-icon class="d-flex align-items-center"
