@@ -5,11 +5,12 @@
   mat-list-item
   (click)="onItemSelected(item)"
   [ngClass]="{
-    'mat-toolbar mat-primary activeMenu': item.route
+    'mat-toolbar mat-primary activeMenu my-8': item.route
       ? router.isActive(item.route, true)
       : false,
+    'expanded': expandedParent === item
   }"
-  class="menu-list-item"
+  class="menu-list-item  my-8"
   *ngIf="!item.navCap"
 >
   <i-tabler
@@ -18,4 +19,26 @@
     matListItemIcon
   ></i-tabler>
   <span class="hide-menu">{{ item.displayName }}</span>
+ <!-- Move the expand icon to the right -->
+ <span class="text-xs" *ngIf="item.isExpanded &&  item.children && item.children.length > 0">
+  <i-tabler  class=" small" name="chevron-up"></i-tabler>
+</span>
+<div class="text-xs"  *ngIf="!item.isExpanded &&  item.children && item.children.length > 0">
+  <i-tabler class=" small" name="chevron-down"></i-tabler>
+</div>
 </a>
+
+<!-- Render children if the parent item is expanded -->
+<div class="child-menu" *ngIf="expandedParent === item && item.children && item.children.length > 0">
+  <a mat-list-item
+    *ngFor="let child of item.children"
+    (click)="onItemSelected(child)"
+    [ngClass]="{
+      'mat-toolbar mat-primary activeMenu  mb-8': child.route
+        ? router.isActive(child.route, true)
+        : false,
+    }"
+    class="menu-list-item  mb-8">
+    <span class="hide-menu ml-9 ">{{ child.displayName }}</span>
+  </a>
+</div>

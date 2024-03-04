@@ -4,6 +4,8 @@ import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
 import { PackagesComponent } from './pages/admin/packages/packages.component';
 import { AuthGuard } from './auth/guards/auth.guard';
+import { FournisseurDashboardComponent } from './pages/dashboard/fournisseur-dashboard/fournisseur-dashboard.component';
+import { UsersComponent } from './pages/admin/users/users.component';
 
 const routes: Routes = [
   {
@@ -26,6 +28,10 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'utilisateurs/:role',
+        component:UsersComponent
+      },
+      {
         path: 'dashboard',
         loadChildren: () =>
           import('./pages/pages.module').then((m) => m.PagesModule),
@@ -37,6 +43,8 @@ const routes: Routes = [
             (m) => m.UicomponentsModule
           ),
       },
+      { path: 'baha',component:FournisseurDashboardComponent },
+
       {
         path: 'extra',
         loadChildren: () =>
@@ -58,6 +66,7 @@ const routes: Routes = [
       },
     ],
   },
+
    // Wildcard route to redirect undefined routes to home
    { path: '**', redirectTo: '' }
 ];

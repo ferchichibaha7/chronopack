@@ -2,6 +2,8 @@ import HttpStatusCodes from "http-status-codes";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User";
 import Payload from "../types/Payload";
+import { Role } from "../models/Role";
+import { Depot } from "../models/Depot";
 
 export default async function(req, res, next) {
   try {
@@ -9,7 +11,15 @@ export default async function(req, res, next) {
   const token = req.headers.authorization.split(" ")[1];
   // Verify token
     const payload: Payload | any = jwt.verify(token, process.env.SECRET);
-    let user   = await User.findOne({ where:{ id : payload.id } as any,attributes: {exclude: ['password']} });
+    let user = await User.findOne({
+      where: { id: payload.id } as any,
+      attributes: { exclude: ['password'] },
+      include: [
+        { model: Role },
+        { model: Depot }
+      ]
+    });
+    
     req.currentUser = user
     next();
   } catch (err) {

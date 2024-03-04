@@ -7,3 +7,33 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .apexcharts-toolbar{
   z-index: 0 !important;
 }
+.small {
+  height: 16px !important;
+  width: 16px !important;
+}
+
+.fill-red {
+  fill: red;
+}
+
+.stroke-blue {
+  color: blue;
+}
+
+.thin {
+  stroke-width: 1px !important;
+}
+.sidebarNav {
+  width: 288px !important;
+  min-width:  288px !important;
+  max-width:  288px !important;
+}
+.mat-mdc-list-item{
+  margin-bottom: 8px !important;
+}
+.mdc-data-table__cell{
+  font-size: 14px !important;
+}
+.mdc-data-table__header-cell{
+  font-weight: 600 !important;
+}

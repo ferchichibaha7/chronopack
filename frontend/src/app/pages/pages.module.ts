@@ -9,11 +9,21 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import * as TablerIcons from 'angular-tabler-icons/icons';
 import { AppDashboardComponent } from './dashboard/dashboard.component';
+import { AdminDashboardComponent } from './dashboard/admin-dashboard/admin-dashboard.component';
+import { ManagerDashboardComponent } from './dashboard/manager-dashboard/manager-dashboard.component';
+import { MagasinierDashboardComponent } from './dashboard/magasinier-dashboard/magasinier-dashboard.component';
+import { CoursierDashboardComponent } from './dashboard/coursier-dashboard/coursier-dashboard.component';
+import { FournisseurDashboardComponent } from './dashboard/fournisseur-dashboard/fournisseur-dashboard.component';
 
 @NgModule({
   declarations: [AppDashboardComponent],
   imports: [
     CommonModule,
+    AdminDashboardComponent,
+    ManagerDashboardComponent,
+    MagasinierDashboardComponent,
+    CoursierDashboardComponent,
+    FournisseurDashboardComponent,
     MaterialModule,
     FormsModule,
     NgApexchartsModule,
