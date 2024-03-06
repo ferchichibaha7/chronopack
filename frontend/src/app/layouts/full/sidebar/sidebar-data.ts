@@ -3,7 +3,7 @@ import { NavItem } from './nav-item/nav-item';
 export const navItems: NavItem[] = [
   {
     navCap: 'Administrateur',
-    roles:['Admin']
+    roles:['Administrateur']
   },
   {
     navCap: 'Fournisseur',
@@ -31,18 +31,19 @@ export const navItems: NavItem[] = [
   {
     displayName: 'Gestion des utilisateurs',
     iconName: 'users',
+    isExpanded:false,
     twoLines:true,
-    roles:['Admin'],
+    roles:['Administrateur'],
     children:[
       {
         displayName: 'Administrateur',
         iconName: 'minus',
-        route: '/utilisateurs/admin',
+        route: '/utilisateurs/Administrateur',
       },
       {
-        displayName: 'Fournisseur',
+        displayName: 'Chef de dépôt',
         iconName: 'minus',
-        route: '/utilisateurs/fournisseur',
+        route: '/utilisateurs/manager',
       },
       {
         displayName: 'Magasinier',
@@ -50,22 +51,23 @@ export const navItems: NavItem[] = [
         route: '/utilisateurs/magasinier',
       },
       {
-        displayName: 'Livreur',
+        displayName: 'Fournisseur',
         iconName: 'minus',
-        route: '/utilisateurs/livreur',
+        route: '/utilisateurs/fournisseur',
       },
       {
-        displayName: 'Chef de dépôt',
+        displayName: 'Livreur',
         iconName: 'minus',
-        route: '/utilisateurs/chef-depot',
+        route: '/utilisateurs/coursier',
       }
+
     ]
   },
   {
     displayName: 'Paramètres',
     iconName: 'settings',
     route: '/settings',
-    roles:['Admin']
+    roles:['Administrateur']
   },
   {
     displayName: 'packages',

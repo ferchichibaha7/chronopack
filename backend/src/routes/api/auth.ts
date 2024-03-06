@@ -2,6 +2,7 @@ import { Router } from "express";
 import { check } from "express-validator/check";
 import auth from "../../middleware/auth";
 import { authController } from '../../controllers/auth.controller';
+import roleAuthorization from "../../middleware/roleAuthorization";
 
 
 const router = Router();
@@ -15,11 +16,11 @@ const validateLogin =   [
 ];
 
 
-router.post( "/create/admin",(...params) => ctrl.createAdmin(...params));
-router.post( "/create/manager",(...params) => ctrl.createManager(...params));
-router.post( "/create/magasinier",(...params) => ctrl.createMagasinier(...params));
-router.post( "/create/coursier",(...params) => ctrl.createCoursier(...params));
-router.post( "/create/fournisseur",(...params) => ctrl.createFournisseur(...params));
+router.post( "/create/Administrateur",auth,roleAuthorization(['Administrateur']),(...params) => ctrl.createAdmin(...params));
+router.post( "/create/manager",auth,roleAuthorization(['Administrateur']),(...params) => ctrl.createManager(...params));
+router.post( "/create/magasinier",auth,roleAuthorization(['Administrateur']),(...params) => ctrl.createMagasinier(...params));
+router.post( "/create/coursier",auth,roleAuthorization(['Administrateur']),(...params) => ctrl.createCoursier(...params));
+router.post( "/create/fournisseur",auth,roleAuthorization(['Administrateur']),(...params) => ctrl.createFournisseur(...params));
 
 router.post( "/login",validateLogin,(...params) => ctrl.login(...params));
 router.get("/current",auth,(...params) => ctrl.currentUser(...params) );

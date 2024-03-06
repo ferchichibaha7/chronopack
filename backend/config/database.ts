@@ -5,7 +5,6 @@ import { Package } from "../src/models/Package";
 import { Status } from "../src/models/Status";
 import { Depot } from "../src/models/Depot";
 import { PackageStateHistory } from "../src/models/PackageStateHistory";
-import { Permission } from "../src/models/Permission";
 import { ReturnReason } from "../src/models/ReturnReason";
 import { Role } from "../src/models/Role";
 dotenv.config();
@@ -19,7 +18,7 @@ const sequelize = new Sequelize({
   username: pg_user,
   password: pg_pass,
   logging:false,
-  models: [User,Depot ,PackageStateHistory ,Permission,ReturnReason, Package,Role, Status], // Include all models
+  models: [User,Depot ,PackageStateHistory ,ReturnReason, Package,Role, Status], // Include all models
 })
 
 const connectAuthenticate = () => {

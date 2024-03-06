@@ -2,6 +2,7 @@ import { Table, Column, Model, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo 
 import { Package } from './Package';
 import { Status } from './Status';
 import { User } from './User';
+import { Depot } from './Depot';
 
 @Table
 export class PackageStateHistory extends Model<PackageStateHistory> {
@@ -22,11 +23,13 @@ export class PackageStateHistory extends Model<PackageStateHistory> {
   @Column
   user_id: number;
 
+  @ForeignKey(() => User) // Foreign key for coursier
   @Column
-  timestamp: Date;
+  coursier_id: number;
 
+  @ForeignKey(() => Depot) // Foreign key for depot
   @Column
-  location: string;
+  depot_id: number;
 
   @BelongsTo(() => Package)
   package: Package;
@@ -36,4 +39,10 @@ export class PackageStateHistory extends Model<PackageStateHistory> {
 
   @BelongsTo(() => User)
   user: User;
+
+  @BelongsTo(() => User, { foreignKey: 'coursier_id', as: 'coursier' }) // Belongs to the coursier
+  coursier: User;
+
+  @BelongsTo(() => Depot, { foreignKey: 'depot_id', as: 'depot' }) // Belongs to the depot
+  Depot: Depot;
 }

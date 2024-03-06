@@ -1,8 +1,9 @@
-import { Table, Column, Model, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Table, Column, Model, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
 import { Status } from './Status';
 import { ReturnReason } from './ReturnReason';
 import { Depot } from './Depot';
 import { User } from './User';
+import { PackageStateHistory } from './PackageStateHistory';
 
 @Table
 export class Package extends Model<Package> {
@@ -61,4 +62,16 @@ export class Package extends Model<Package> {
 
   @BelongsTo(() => User, { foreignKey: 'sender_id', as: 'sender' })
   sender: User;
+
+  @HasMany(() => PackageStateHistory)
+  packageHistory: PackageStateHistory[];
+
+   // Method to fetch package history
+   async fetchPackageHistory() {
+    // Fetch associated package history
+    this.packageHistory = await PackageStateHistory.findAll({
+      where: { package_id: this.package_id } as any
+    });
+    return this.packageHistory;
+  }
 }

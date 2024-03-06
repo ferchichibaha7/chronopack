@@ -1,0 +1,10 @@
+.mat-form-field-appearance-outline .mat-form-field-flex {
+  border: none !important; /* Remove the border from the input */
+}
+
+.mat-focused::before {
+  border-style: none !important; /* Ensure the border remains removed when the input is focused */
+}
+.mat-focused::after   {
+  border-style: none !important; /* Ensure the border remains removed when the input is focused */
+}

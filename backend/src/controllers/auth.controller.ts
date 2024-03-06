@@ -48,7 +48,7 @@ export class authController {
           ].filter(Boolean),
         });
       }
-      const adminRole = await Role.findOne({ where: { role_name: 'Admin' } as any });
+      const adminRole = await Role.findOne({ where: { role_name: 'Administrateur' } as any });
       // Hash the password securely
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);

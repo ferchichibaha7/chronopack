@@ -45,6 +45,6 @@ import { AppNavItemComponent } from './layouts/full/sidebar/nav-item/nav-item.co
     TablerIconsModule.pick(TablerIcons),
   ],
   exports: [TablerIconsModule],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}
