@@ -10,7 +10,7 @@ const router = Router();
 const ctrl = new packageController();
 
 
-router.get("/", (...params) => ctrl.getAllPackagesWithHistory(...params));
+router.get("/",auth, (...params) => ctrl.getAllPackagesWithHistory(...params));
 router.post("/create",auth, (...params) => ctrl.createPackage(...params));
 
 

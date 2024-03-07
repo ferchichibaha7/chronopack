@@ -19,7 +19,6 @@ export default async function(req, res, next) {
         { model: Depot }
       ]
     });
-    
     req.currentUser = user
     next();
   } catch (err) {

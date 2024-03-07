@@ -6,6 +6,7 @@ import { PackagesComponent } from './pages/admin/packages/packages.component';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { FournisseurDashboardComponent } from './pages/dashboard/fournisseur-dashboard/fournisseur-dashboard.component';
 import { UsersComponent } from './pages/admin/users/users.component';
+import { MyPackagesComponent } from './pages/my-packages/my-packages.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,10 @@ const routes: Routes = [
       {
         path: 'utilisateurs/:role',
         component:UsersComponent
+      },
+      {
+        path: 'fournisseur/mypackages',
+        component:MyPackagesComponent
       },
       {
         path: 'dashboard',

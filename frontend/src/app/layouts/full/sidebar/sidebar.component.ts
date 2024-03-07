@@ -20,12 +20,15 @@ export class SidebarComponent implements OnInit {
     this.auth_service.fetchUserData().subscribe(userData => {
       this.auth_service.setUserData(userData.result);
       this.userData =userData.result
-      this.navItems = navItems.filter(item =>{
-        if(item.roles){
-          return item.roles?.includes(this.userData.role.role_name)
-        }
-        return item
-      })
+      if(navItems && navItems.length>0){
+        this.navItems = navItems.filter(item =>{
+          if(item.roles){
+            return item.roles?.includes(this.userData.role.role_name)
+          }
+          return item
+        })
+      }
+
     });
 
   }

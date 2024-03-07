@@ -70,6 +70,12 @@ export const navItems: NavItem[] = [
     roles:['Administrateur']
   },
   {
+    displayName: 'Mes Colis',
+    iconName: 'package',
+    route: '/fournisseur/mypackages',
+    roles:['Fournisseur']
+  },
+  {
     displayName: 'packages',
     iconName: 'package',
     route: '/admin/packages',

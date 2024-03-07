@@ -23,7 +23,7 @@ export class packageController {
         receiver_address,
         receiver_contact_info,
         status_id: 1, // Set the status_id to 1
-        depot_id,
+        depot_id:req['currentUser'].depot_id,
         delivery_cost,
         is_paid: false
       });
@@ -45,25 +45,70 @@ export class packageController {
 
   public getAllPackagesWithHistory = async (...params) => {
     const [req, res, next] = params;
-
     try {
-      // Find all packages
-      const packages = await Package.findAll({
-        include: [
-          {
-            all: true,
-            nested: true,
-            attributes: { exclude: ["password"] } // Exclude password attribute
-          }
-        ],
-        attributes: { exclude: ["password"] }
-      });
-
+      let packages;
+      // Check the role of the current user
+      if ( req['currentUser'].role_id === 1) { // Admin
+        // Return all packages
+        packages = await Package.findAll({
+          include: [
+            {
+              all: true,
+              nested: true,
+              attributes: { exclude: ["password"] } // Exclude password attribute
+            }
+          ],
+          attributes: { exclude: ["password"] }
+        });
+      } else if ( req['currentUser'].role_id === 5) { // Fournisseur
+        // Return packages where sender_id is the current user's id   
+                 
+        packages = await Package.findAll({
+          where: { sender_id:  req['currentUser'].id } as any,
+          include: [
+            {
+              all: true,
+              nested: true,
+              attributes: { exclude: ["password"] } // Exclude password attribute
+            }
+          ],
+          attributes: { exclude: ["password"] }
+        });
+      } else if ( req['currentUser'].role_id === 2 ||  req['currentUser'].role_id === 3) { // Magasinier or Manager
+        // Return packages where depot_id matches the current user's depot_id
+        packages = await Package.findAll({
+          where: { depot_id:  req['currentUser'].depot_id } as any,
+          include: [
+            {
+              all: true,
+              nested: true,
+              attributes: { exclude: ["password"] } // Exclude password attribute
+            }
+          ],
+          attributes: { exclude: ["password"] }
+        });
+      } else if ( req['currentUser'].role_id === 4) { // Coursier
+        // Return packages where the package history contains the current user's id as coursier_id
+        packages = await Package.findAll({
+          include: [
+            {
+              model: PackageStateHistory,
+              where: { coursier_id: req['currentUser'].id } as any
+            },
+            {
+              all: true,
+              nested: true,
+              attributes: { exclude: ["password"] } // Exclude password attribute
+            }
+          ],
+          attributes: { exclude: ["password"] }
+        });
+      }
+  
       // Fetch history for each package
       for (const pkg of packages) {
         await pkg.fetchPackageHistory(); // Assuming fetchPackageHistory method is defined in the Package model
       }
-
       // Return packages with their associated history
       res.status(200).json(packages);
     } catch (error) {

@@ -19,6 +19,12 @@ const sequelize = new Sequelize({
   password: pg_pass,
   logging:false,
   models: [User,Depot ,PackageStateHistory ,ReturnReason, Package,Role, Status], // Include all models
+  pool: {
+    max: 10,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  }
 })
 
 const connectAuthenticate = () => {

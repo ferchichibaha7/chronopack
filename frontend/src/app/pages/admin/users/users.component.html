@@ -27,7 +27,7 @@
                   <input matInput formControlName="password" type="password" placeholder="Mot de passe">
                 </mat-form-field>
               </div>
-              <div *ngIf="role != 'Administrateur' && role != 'fournisseur'" class=" flex flex-col ">
+              <div *ngIf="role != 'Administrateur'" class=" flex flex-col ">
                 <mat-label>Dépôt</mat-label>
                 <mat-form-field class="mt-2"  appearance="outline">
                   <input matInput formControlName="depotId" placeholder="ID du dépôt">
