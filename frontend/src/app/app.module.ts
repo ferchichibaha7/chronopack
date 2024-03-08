@@ -23,6 +23,8 @@ import { SidebarComponent } from './layouts/full/sidebar/sidebar.component';
 import { HeaderComponent } from './layouts/full/header/header.component';
 import { BrandingComponent } from './layouts/full/sidebar/branding.component';
 import { AppNavItemComponent } from './layouts/full/sidebar/nav-item/nav-item.component';
+import { CoolDialogsModule } from '@angular-cool/dialogs';
+import { ToastrModule } from 'ngx-toastr';
 
 
 @NgModule({
@@ -44,8 +46,10 @@ import { AppNavItemComponent } from './layouts/full/sidebar/nav-item/nav-item.co
     ReactiveFormsModule,
     MaterialModule,
     TablerIconsModule.pick(TablerIcons),
+    CoolDialogsModule.forRoot(),
+        ToastrModule.forRoot(), // ToastrModule added
   ],
-  exports: [TablerIconsModule],
+  exports: [TablerIconsModule,CoolDialogsModule,ToastrModule],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

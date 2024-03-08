@@ -12,6 +12,7 @@ const ctrl = new packageController();
 
 router.get("/",auth, (...params) => ctrl.getAllPackagesWithHistory(...params));
 router.post("/create",auth, (...params) => ctrl.createPackage(...params));
+router.put("/:packageId/state/:newStateId",auth, (...params) => ctrl.updatePackageState(...params));
 
 
 

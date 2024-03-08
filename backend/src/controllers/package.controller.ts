@@ -116,6 +116,53 @@ export class packageController {
       res.status(500).json({ error: 'Internal server error' });
     }
   };
+
+
+
+  public async updatePackageState(...params) {
+    const [req, res, next] = params;
+    const currentUser = req['currentUser'];
+    try {
+      const { packageId, newStateId } = req.params;
+
+     // Update the state of the package
+     const updatedPackage = await Package.findByPk(packageId);
+     if  (
+      (updatedPackage.status_id !== 1 && updatedPackage.status_id !== 2 && updatedPackage.status_id !== 9) &&
+      currentUser.role_id === 5
+    ){
+      return res.status(HttpStatusCodes.NOT_FOUND).json({ error: "Action not allowed" });
+    }
+     if (!updatedPackage) {
+       return res.status(HttpStatusCodes.NOT_FOUND).json({ error: "Package not found" });
+     }
+
+     // Check if the package sender_id matches the current user's ID
+     if (updatedPackage.sender_id !== currentUser.id) {
+       return res.status(HttpStatusCodes.FORBIDDEN).json({ error: "Unauthorized action" });
+     }
+
+   
+     
+
+     // Update the package's state
+     updatedPackage.status_id = newStateId;
+  // Save the changes to the database
+     await updatedPackage.save()
+     // Create a new package history entry
+     await PackageStateHistory.create({
+       package_id: packageId,
+       state_id: newStateId,
+       user_id: currentUser.id
+     });
+
+     // Return the updated package
+     res.status(HttpStatusCodes.OK).json({ message: "Package state updated successfully", updatedPackage });
+   } catch (error) {
+     console.error("Error updating package state:", error);
+     res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
+   }
+ }
 }
 
 

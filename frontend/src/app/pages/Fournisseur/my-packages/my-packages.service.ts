@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -23,5 +23,15 @@ export class PackageService {
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     });
     return this.http.post('http://localhost:5000/api/pack/create', packageData, { headers });
+  }
+
+  updatePackageState(packageId: number, newStateId: number): Observable<any> {
+    const token = localStorage.getItem('accessToken');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    // Pass the headers object as the third argument
+    return this.http.put<any>(`http://localhost:5000/api/pack/${packageId}/state/${newStateId}`, {}, { headers });
   }
 }

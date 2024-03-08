@@ -66,6 +66,7 @@ export class Package extends Model<Package> {
   @HasMany(() => PackageStateHistory)
   packageHistory: PackageStateHistory[];
 
+  
    // Method to fetch package history
    async fetchPackageHistory() {
     // Fetch associated package history
@@ -74,4 +75,6 @@ export class Package extends Model<Package> {
     });
     return this.packageHistory;
   }
+
+
 }

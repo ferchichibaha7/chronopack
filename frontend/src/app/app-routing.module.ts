@@ -2,11 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
-import { PackagesComponent } from './pages/admin/packages/packages.component';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { FournisseurDashboardComponent } from './pages/dashboard/fournisseur-dashboard/fournisseur-dashboard.component';
 import { UsersComponent } from './pages/admin/users/users.component';
-import { MyPackagesComponent } from './pages/my-packages/my-packages.component';
+import { MyPackagesComponent } from './pages/Fournisseur/my-packages/my-packages.component';
+import { PdfGeneratorComponent } from './pages/Shared/pdf-generator/pdf-generator.component';
+import { RoleGuard } from './auth/guards/role.guard';
 
 const routes: Routes = [
   {
@@ -24,17 +25,25 @@ const routes: Routes = [
         path: 'admin',
         children: [
           { path: '', redirectTo: '/dashboard', pathMatch: 'full' }, // Redirect to dashboard
-          { path: 'packages', component: PackagesComponent }, // Use your existing component
+
           // ... other routes specific to the admin area
-        ]
+        ],
       },
       {
         path: 'utilisateurs/:role',
-        component:UsersComponent
+        canActivate: [RoleGuard],
+        data: {
+          expectedRoles: ['Administrateur'], // Specify the expected roles for this route
+        },
+        component: UsersComponent,
       },
       {
-        path: 'fournisseur/mypackages',
-        component:MyPackagesComponent
+        path: 'packages',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRoles: ['Fournisseur', 'Administrateur'], // Specify the expected roles for this route
+        },
+        component: MyPackagesComponent,
       },
       {
         path: 'dashboard',
@@ -43,20 +52,29 @@ const routes: Routes = [
       },
       {
         path: 'ui-components',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRoles: ['Administrateur'], // Specify the expected roles for this route
+        },
         loadChildren: () =>
           import('./pages/ui-components/ui-components.module').then(
             (m) => m.UicomponentsModule
           ),
       },
-      { path: 'baha',component:FournisseurDashboardComponent },
+      { path: 'baha', component: FournisseurDashboardComponent },
 
       {
         path: 'extra',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRoles: ['Administrateur'], // Specify the expected roles for this route
+        },
         loadChildren: () =>
           import('./pages/extra/extra.module').then((m) => m.ExtraModule),
       },
-      ],
+    ],
   },
+  { path: 'bordereau/:id', component: PdfGeneratorComponent },
 
   {
     path: '',
@@ -72,8 +90,8 @@ const routes: Routes = [
     ],
   },
 
-   // Wildcard route to redirect undefined routes to home
-   { path: '**', redirectTo: '' }
+  // Wildcard route to redirect undefined routes to home
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({

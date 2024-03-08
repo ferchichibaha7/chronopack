@@ -2,26 +2,9 @@ import { NavItem } from './nav-item/nav-item';
 
 export const navItems: NavItem[] = [
   {
-    navCap: 'Administrateur',
-    roles:['Administrateur']
+    navCap: 'Page d\'accueil',
   },
-  {
-    navCap: 'Fournisseur',
-    roles:['Fournisseur']
 
-  },
-  {
-    navCap: 'Magasinier',
-    roles:['Magasinier']
-  },
-  {
-    navCap: 'Livreur',
-    roles:['Coursier']
-  },
-  {
-    navCap: 'Chef de dépôt',
-    roles:['Manager']
-  },
   {
     displayName: 'Dashboard',
     iconName: 'layout-dashboard',
@@ -29,7 +12,7 @@ export const navItems: NavItem[] = [
 
   },
   {
-    displayName: 'Gestion des utilisateurs',
+    displayName: 'Utilisateurs',
     iconName: 'users',
     isExpanded:false,
     twoLines:true,
@@ -72,14 +55,14 @@ export const navItems: NavItem[] = [
   {
     displayName: 'Mes Colis',
     iconName: 'package',
-    route: '/fournisseur/mypackages',
+    route: '/packages',
     roles:['Fournisseur']
   },
   {
-    displayName: 'packages',
+    displayName: 'Stock',
     iconName: 'package',
-    route: '/admin/packages',
-    roles:['Coursier','Magasinier','Manager']
+    route: '/packages',
+    roles:['Manager']
   },
   {
     displayName: 'Payement',

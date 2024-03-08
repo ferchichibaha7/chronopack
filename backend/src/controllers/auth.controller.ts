@@ -304,7 +304,6 @@ export class authController {
         }
       );
     } catch (err) {
-      console.error(err.message);
       res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send("Server Error");
     }
   

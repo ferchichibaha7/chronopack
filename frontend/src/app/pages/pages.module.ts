@@ -14,6 +14,9 @@ import { ManagerDashboardComponent } from './dashboard/manager-dashboard/manager
 import { MagasinierDashboardComponent } from './dashboard/magasinier-dashboard/magasinier-dashboard.component';
 import { CoursierDashboardComponent } from './dashboard/coursier-dashboard/coursier-dashboard.component';
 import { FournisseurDashboardComponent } from './dashboard/fournisseur-dashboard/fournisseur-dashboard.component';
+import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
+import { CoolDialogsModule } from '@angular-cool/dialogs';
+import { PdfGeneratorComponent } from './Shared/pdf-generator/pdf-generator.component';
 
 @NgModule({
   declarations: [AppDashboardComponent],
@@ -29,7 +32,11 @@ import { FournisseurDashboardComponent } from './dashboard/fournisseur-dashboard
     NgApexchartsModule,
     RouterModule.forChild(PagesRoutes),
     TablerIconsModule.pick(TablerIcons),
+    ConfirmationPopoverModule.forRoot({
+      confirmButtonType: 'danger', // set defaults here
+    }),
+    CoolDialogsModule.forRoot()
   ],
-  exports: [TablerIconsModule],
+  exports: [TablerIconsModule,ConfirmationPopoverModule,CoolDialogsModule],
 })
 export class PagesModule {}

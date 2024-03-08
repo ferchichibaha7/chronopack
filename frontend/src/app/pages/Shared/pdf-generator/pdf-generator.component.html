@@ -1,0 +1,57 @@
+<div >
+  <div class="container px-8">
+
+    <div class="download">
+      <div class="text-right">
+        <button (click)="convetToPDF()"  mat-flat-button color="primary"> <mat-icon class="d-flex align-items-center"
+          ><i-tabler name="download" class="icon-16 d-flex"></i-tabler></mat-icon
+        >Télécharger bordereau</button>
+      </div>
+
+    </div>
+
+
+</div>
+
+  </div>
+<div *ngIf="packageId" #contentToConvert id="contentToConvert" class="pdf-content ">
+  <div class="h-1">
+
+  </div>
+  <div class=" border my-8 mx-12 p-8  border-gray-300" >
+    <div class="bg-white rounded-lg  p-6">
+      <div class="branding">
+         <h2 class="font-bold text-2xl">
+    <span class="text-blue-600 font-bold">CHRONO</span>
+    <span class=" inherit-color font-bold">PACK</span>
+  </h2>
+      </div>
+      <div class="flex justify-between items-center px-12 pb-4 mb-4">
+        <div>
+          <ngx-barcode6
+          class="w-20"
+          [bc-format]="'CODE128'"
+          [bc-value]="packageId"
+          [bc-display-value]="true"
+        >
+        </ngx-barcode6><br>
+        <h2 class="font-bold text-xl">Package ID</h2>
+          <br>
+          <h5 class="text-gray-600">Weight: 2 kg</h5><br>
+          <h5 class="text-gray-600">Price: $20</h5>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+    </div>
+
+
+
+
+
+
+

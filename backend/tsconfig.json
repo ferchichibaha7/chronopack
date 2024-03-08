@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
     "lib": [
       "dom",
       "es6",
       "es2017",
       "esnext.asynciterable"
     ],
+    "target": "es6",
+    "module": "commonjs",
+    "strict": true,
+    "skipLibCheck": true, // You might want to change this for your setup
+    "forceConsistentCasingInFileNames": true,
     "sourceMap": true,
     "outDir": "dist",
     "moduleResolution": "node",

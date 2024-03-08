@@ -25,16 +25,22 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   stroke-width: 1px !important;
 }
 .sidebarNav {
-  width: 288px !important;
-  min-width:  288px !important;
-  max-width:  288px !important;
+  width: 250px !important;
+  min-width:   250px !important;
+  max-width:   250px !important;
 }
 .mat-mdc-list-item{
   margin-bottom: 8px !important;
 }
 .mdc-data-table__cell{
-  font-size: 14px !important;
+  font-size: 13px !important;
 }
 .mdc-data-table__header-cell{
   font-weight: 600 !important;
+}
+
+
+::ng-deep .test {
+  background: #1abc9c;
+  color     : blue;
 }

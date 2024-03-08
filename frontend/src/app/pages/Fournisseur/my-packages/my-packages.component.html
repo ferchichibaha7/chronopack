@@ -1,0 +1,65 @@
+<div class="flex justify-end mb-8"> <!-- Add flex utilities to align buttons to the right -->
+  <button mat-raised-button  [color]="'primary'" (click)="showCreate = !showCreate"><mat-icon class="d-flex align-items-center"
+    ><i-tabler name="user-plus" class="icon-16 d-flex"></i-tabler></mat-icon
+  >Créer
+    package</button>
+</div>
+
+<mat-card *ngIf="showCreate" class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="flex flex-col w-100">
+      <mat-card-title>Ajouter colis</mat-card-title>
+      <div class="w-100 mt-8">
+        <div class="">
+          <form [formGroup]="packageForm" (ngSubmit)="onSubmit()">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div class="flex flex-col">
+                <mat-label>Article</mat-label>
+                <mat-form-field class="mt-2" appearance="outline">
+                  <input matInput formControlName="description" placeholder="Article">
+                </mat-form-field>
+              </div>
+
+              <div class="flex flex-col">
+                <mat-label>Prix</mat-label>
+                <mat-form-field class="mt-2" appearance="outline">
+                  <input matInput formControlName="price" placeholder="Prix">
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col">
+                <mat-label>Nom du destinataire</mat-label>
+                <mat-form-field class="mt-2" appearance="outline">
+                  <input matInput formControlName="receiver_name" placeholder="Nom du destinataire">
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col">
+                <mat-label>Adresse du destinataire</mat-label>
+                <mat-form-field class="mt-2" appearance="outline">
+                  <input matInput formControlName="receiver_address" placeholder="Adresse du destinataire">
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col">
+                <mat-label>Téléphone</mat-label>
+                <mat-form-field class="mt-2" appearance="outline">
+                  <input matInput formControlName="receiver_contact_info" placeholder="Téléphone">
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="flex justify-end"> <!-- Add flex utilities to align buttons to the right -->
+              <button mat-flat-button type="button" (click)="clearForm()">Effacer</button>
+              <button mat-flat-button color="primary" type="submit">Créer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+<app-package-list></app-package-list>
+
+
+
+
+
+

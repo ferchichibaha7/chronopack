@@ -3,29 +3,30 @@
   <mat-nav-list class="sidebar-list overflow-y-scroll">
     <app-nav-item *ngFor="let item of navItems" [item]="item"> </app-nav-item>
   </mat-nav-list>
-  <!--
-  <div class="p-24 m-t-auto">
-    <div class="bg-light-primary d-flex align-items-center rounded p-20 m-t-20">
-      <div>
-        <h5 class="mat-subtitle-1 f-s-16 f-w-600 m-b-8">
-          Unlimied <br />Access
-        </h5>
-        <a
-          mat-flat-button
-          color="primary"
-          href="https://adminmart.com/product/modernize-angular-admin-dashboard/"
-          target="_blank"
-          class="d-flex justify-content-center"
-        >
-          Upgrade
-        </a>
+
+  <div *ngIf="userData" class="p-12 m-t-auto">
+    <div class="bg-light-accent rounded p-20 m-t-20">
+      <div class="flex flex-row   align-items-center  justify-between ">
+        <div class="flex flex-row  gap-12 align-items-center">
+          <img
+          src="/assets/images/backgrounds/user.png"
+          alt="imgae"
+          class=" w-10 h-10"
+        />
+         <div class="flex flex-col">
+          <h5 class="mat-subtitle-2 f-w-600">{{userData.username}}</h5>
+          <div class="f-s-12">{{getNavCap(userData.role.role_name)}}</div>
+         </div>
+
+        </div>
+
+        <button  (click)="logout()"
+        mat-icon-button class="d-flex justify-content-center  ml-auto">
+        <i-tabler name="power" class="icon-16 d-flex text-blue-500"></i-tabler>
+        </button>
       </div>
-      <img
-        src="/assets/images/backgrounds/rocket.png"
-        alt="imgae"
-        class="side-img"
-      />
+
     </div>
   </div>
-  -->
+
 </div>
