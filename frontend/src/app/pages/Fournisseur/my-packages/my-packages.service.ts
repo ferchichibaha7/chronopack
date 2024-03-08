@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
@@ -10,12 +10,21 @@ export class PackageService {
   constructor(private http: HttpClient) {
   }
 
-  getAllPackages() {
+  getAllPackages(statusName?: string) {
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     });
 
-    return this.http.get('http://localhost:5000/api/pack', { headers });
+     // Create an empty params object
+     let params = new HttpParams();
+
+     // If statusName is provided, add it to the params
+     if (statusName) {
+       params = params.set('statusName', statusName);
+     }
+
+    return this.http.get('http://localhost:5000/api/pack', { headers,params });
   }
 
   createPackage(packageData: any): Observable<any> {

@@ -5,6 +5,7 @@ import HttpStatusCodes from "http-status-codes";
 import { Op } from "sequelize";
 import { Package } from "../models/Package";
 import { PackageStateHistory } from "../models/PackageStateHistory";
+import { Status } from "../models/Status";
 export class packageController {
   constructor() {}
 
@@ -47,61 +48,66 @@ export class packageController {
     const [req, res, next] = params;
     try {
       let packages;
-      // Check the role of the current user
-      if ( req['currentUser'].role_id === 1) { // Admin
+  
+      // Define a base query object
+      const baseQuery: any = {
+        include: [
+          {
+            all: true,
+            nested: true,
+            attributes: { exclude: ["password"] } // Exclude password attribute
+          }
+        ],
+        attributes: { exclude: ["password"] }
+      };
+  
+      // Check if statusName is passed in the query params
+      const statusName = req.query.statusName ? req.query.statusName : null;
+  
+      // Check the role of the current user and customize the query accordingly
+      if (req['currentUser'].role_id === 1) { // Admin
         // Return all packages
-        packages = await Package.findAll({
-          include: [
-            {
-              all: true,
-              nested: true,
-              attributes: { exclude: ["password"] } // Exclude password attribute
-            }
-          ],
-          attributes: { exclude: ["password"] }
-        });
-      } else if ( req['currentUser'].role_id === 5) { // Fournisseur
+        packages = await Package.findAll(baseQuery);
+      } else if (req['currentUser'].role_id === 5) { // Fournisseur
         // Return packages where sender_id is the current user's id   
-                 
         packages = await Package.findAll({
-          where: { sender_id:  req['currentUser'].id } as any,
+          ...baseQuery,
+          where: { 
+            sender_id: req['currentUser'].id,
+            ...(statusName && { '$status.statusName$': statusName }) // Conditionally add statusName filter
+          } as any,
           include: [
             {
-              all: true,
-              nested: true,
-              attributes: { exclude: ["password"] } // Exclude password attribute
+              model: Status,
+              where: statusName ? { statusName: statusName } : {} // Conditionally add statusName filter
             }
-          ],
-          attributes: { exclude: ["password"] }
+          ]
         });
-      } else if ( req['currentUser'].role_id === 2 ||  req['currentUser'].role_id === 3) { // Magasinier or Manager
+      } else if (req['currentUser'].role_id === 2 || req['currentUser'].role_id === 3) { // Magasinier or Manager
         // Return packages where depot_id matches the current user's depot_id
         packages = await Package.findAll({
-          where: { depot_id:  req['currentUser'].depot_id } as any,
+          ...baseQuery,
+          where: { 
+            depot_id: req['currentUser'].depot_id,
+            ...(statusName && { '$status.statusName$': statusName }) // Conditionally add statusName filter
+          } as any,
           include: [
             {
-              all: true,
-              nested: true,
-              attributes: { exclude: ["password"] } // Exclude password attribute
+              model: Status,
+              where: statusName ? { statusName: statusName } : {} // Conditionally add statusName filter
             }
-          ],
-          attributes: { exclude: ["password"] }
+          ]
         });
-      } else if ( req['currentUser'].role_id === 4) { // Coursier
+      } else if (req['currentUser'].role_id === 4) { // Coursier
         // Return packages where the package history contains the current user's id as coursier_id
         packages = await Package.findAll({
+          ...baseQuery,
           include: [
             {
               model: PackageStateHistory,
               where: { coursier_id: req['currentUser'].id } as any
-            },
-            {
-              all: true,
-              nested: true,
-              attributes: { exclude: ["password"] } // Exclude password attribute
             }
-          ],
-          attributes: { exclude: ["password"] }
+          ]
         });
       }
   
@@ -109,6 +115,7 @@ export class packageController {
       for (const pkg of packages) {
         await pkg.fetchPackageHistory(); // Assuming fetchPackageHistory method is defined in the Package model
       }
+  
       // Return packages with their associated history
       res.status(200).json(packages);
     } catch (error) {
@@ -116,6 +123,8 @@ export class packageController {
       res.status(500).json({ error: 'Internal server error' });
     }
   };
+  
+  
 
 
 

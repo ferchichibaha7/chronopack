@@ -61,8 +61,8 @@ export const navItems: NavItem[] = [
   {
     displayName: 'Stock',
     iconName: 'package',
-    route: '/packages',
-    roles:['Manager']
+    route: '/stock',
+    roles:['Manager','Magasinier']
   },
   {
     displayName: 'Payement',

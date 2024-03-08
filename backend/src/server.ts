@@ -113,7 +113,9 @@ async function createStatesIfNotExist(): Promise<void> {
     { statusName: 'En cours de livraison' },
     { statusName: 'Livré' },
     { statusName: 'Retourné' },
-    { statusName: 'Livré et payé' }
+    { statusName: 'Livré et payé' },
+    { statusName: 'Annulé' },
+    { statusName: 'Pickup' }
   ];
 
   try {

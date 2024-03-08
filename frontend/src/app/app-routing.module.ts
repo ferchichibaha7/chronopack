@@ -8,6 +8,7 @@ import { UsersComponent } from './pages/admin/users/users.component';
 import { MyPackagesComponent } from './pages/Fournisseur/my-packages/my-packages.component';
 import { PdfGeneratorComponent } from './pages/Shared/pdf-generator/pdf-generator.component';
 import { RoleGuard } from './auth/guards/role.guard';
+import { StockComponent } from './pages/Manager/stock/stock.component';
 
 const routes: Routes = [
   {
@@ -44,6 +45,14 @@ const routes: Routes = [
           expectedRoles: ['Fournisseur', 'Administrateur'], // Specify the expected roles for this route
         },
         component: MyPackagesComponent,
+      },
+      {
+        path: 'stock',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRoles: ['Manager', 'Magasinier'], // Specify the expected roles for this route
+        },
+        component: StockComponent,
       },
       {
         path: 'dashboard',
