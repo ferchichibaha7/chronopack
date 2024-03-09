@@ -10,9 +10,17 @@ const router = Router();
 const ctrl = new packageController();
 
 
-router.get("/",auth, (...params) => ctrl.getAllPackagesWithHistory(...params));
-router.post("/create",auth, (...params) => ctrl.createPackage(...params));
-router.put("/:packageId/state/:newStateId",auth, (...params) => ctrl.updatePackageState(...params));
+// Get all packages with history
+router.get("/", auth, (...params) => ctrl.getAllPackagesWithHistory(...params));
+
+// Create a new package
+router.post("/create", auth, (...params) => ctrl.createPackage(...params));
+
+// Update package state
+router.put("/:packageId/state/:newStateId", auth, (...params) => ctrl.updatePackageState(...params));
+
+// Get package by ID
+router.get("/:id", auth, (...params) => ctrl.getPackageById(...params));
 
 
 

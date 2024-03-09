@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 import { CoolDialogService, CoolDialogsModule } from '@angular-cool/dialogs';
@@ -8,7 +8,7 @@ import { MaterialModule } from 'src/app/material.module';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { PackageService } from '../../Fournisseur/my-packages/my-packages.service';
+import { PackageService } from '../../../services/packages.service';
 import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
@@ -19,7 +19,7 @@ import { MatPaginator } from '@angular/material/paginator';
   styleUrls: ['./package-list.component.scss']
 })
 export class PackageListComponent implements OnInit {
-
+  @Input() status: string; // Declare the input property
   showCreate: boolean = false;
   selectedPackageId: number;
   selectedStateId: any; // Define the property
@@ -94,18 +94,34 @@ export class PackageListComponent implements OnInit {
 
   getPackages(): void {
     this.packages_loading = true;
-    this.packageService.getAllPackages().subscribe(
-      (packages: any) => {
-        packages.reverse();
-        this.dataSource = new MatTableDataSource(packages);
-        this.dataSource.paginator = this.paginator;
-        this.packages_loading = false;
-      },
-      (error) => {
-        console.error('Error fetching packages:', error);
-        this.packages_loading = false;
-      }
-    );
+
+    if (this.status) {
+      this.packageService.getAllPackages(this.status).subscribe(
+        (packages: any) => {
+          packages.reverse();
+          this.dataSource = new MatTableDataSource(packages);
+          this.dataSource.paginator = this.paginator;
+          this.packages_loading = false;
+        },
+        (error) => {
+          console.error('Error fetching packages:', error);
+          this.packages_loading = false;
+        }
+      );
+    } else {
+      this.packageService.getAllPackages().subscribe(
+        (packages: any) => {
+          packages.reverse();
+          this.dataSource = new MatTableDataSource(packages);
+          this.dataSource.paginator = this.paginator;
+          this.packages_loading = false;
+        },
+        (error) => {
+          console.error('Error fetching packages:', error);
+          this.packages_loading = false;
+        }
+      );
+    }
   }
 
   getStatusControl(row: any): FormControl {

@@ -59,9 +59,33 @@ export const navItems: NavItem[] = [
     roles:['Fournisseur']
   },
   {
-    displayName: 'Stock',
+    displayName: 'Tous les colis',
     iconName: 'package',
+    route: '/allpackages',
+    roles:['Manager','Magasinier']
+  },
+  {
+    displayName: 'Stock',
+    iconName: 'building-warehouse',
     route: '/stock',
+    roles:['Manager','Magasinier']
+  },
+  {
+    displayName: 'En attente',
+    iconName: 'clock-hour-5',
+    route: '/en-attente',
+    roles:['Manager','Magasinier']
+  },
+  {
+    displayName: 'Pickup',
+    iconName: 'package-import',
+    route: '/pickup',
+    roles:['Manager','Magasinier']
+  },
+  {
+    displayName: 'Transit',
+    iconName: 'truck-delivery',
+    route: '/transit',
     roles:['Manager','Magasinier']
   },
   {

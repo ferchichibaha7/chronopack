@@ -1,4 +1,4 @@
-<div >
+<div *ngIf="packageData" >
   <div class="container px-8">
 
     <div class="download">
@@ -14,39 +14,103 @@
 </div>
 
   </div>
-<div *ngIf="packageId" #contentToConvert id="contentToConvert" class="pdf-content ">
-  <div class="h-1">
+<div *ngIf="packageData" #contentToConvert id="contentToConvert" class="pdf-content ">
+  <div class="grid grid-cols-1 gap-4 p-24">
+    <!-- Table 1 -->
+    <div>
+      <table class="table-auto w-100">
+        <thead>
+          <tr>
+            <th class="px-4 py-2 w-1/3"></th>
+            <th class="px-4 py-2"></th>
 
-  </div>
-  <div class=" border my-8 mx-12 p-8  border-gray-300" >
-    <div class="bg-white rounded-lg  p-6">
-      <div class="branding">
-         <h2 class="font-bold text-2xl">
-    <span class="text-blue-600 font-bold">CHRONO</span>
-    <span class=" inherit-color font-bold">PACK</span>
-  </h2>
-      </div>
-      <div class="flex justify-between items-center px-12 pb-4 mb-4">
-        <div>
-          <ngx-barcode6
-          class="w-20"
-          [bc-format]="'CODE128'"
-          [bc-value]="packageId"
-          [bc-display-value]="true"
-        >
-        </ngx-barcode6><br>
-        <h2 class="font-bold text-xl">Package ID:{{packageId}}</h2>
-        </div>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rows -->
+          <tr>
+            <td class="border px-4 py-2 ">
+              <div class="branding w-100  flex  justify-center items-center ">
+                <h2 class="font-bold text-2xl">
+           <span class="text-blue-600 font-bold">CHRONO</span>
+           <span class=" inherit-color font-bold">PACK</span>
+         </h2>
+             </div>
+            </td>
+            <td class="border px-4 py-2   flex flex-col justify-center items-center">
+              <h3 class="font-bold text-xl p-4 ml-16">BORDEREAU</h3>
+              <ngx-barcode6
+              class="w-20"
+              [bc-height]="30"
+              [bc-width]="3"
+              [bc-format]="'CODE128'"
+              [bc-value]="packageData.package_id"
+              [bc-display-value]="true"
+            >
+            </ngx-barcode6>
+            </td>
+          </tr>
 
-      </div>
 
+          <tr>
+            <td class="border px-4 py-4">Expéditeur</td>
+            <td class="border px-4 py-4">{{packageData.sender.username}}</td>
+          </tr>
+          <!-- Repeat rows for a total of 9 -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Table 2 -->
+    <div>
+      <table class="table-auto mt-8 mb-32  w-100">
+        <thead>
+          <tr>
+            <th class="border px-4 py-4 text-center">REF</th>
+            <th class="border px-4 py-4 text-center">Article</th>
+            <th class=" border px-4 py-4 text-center">Prix</th>
+            <th class=" border px-4 py-4 text-center">Destinataire</th>
+            <th class=" border px-4 py-4 text-center">Adresse</th>
+            <th class=" border px-4 py-4 text-center">Téléphone</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rows -->
+          <tr>
+            <td class="border px-4 py-4 flex flex-row justify-center items-center text-center"><span>
+              <ngx-barcode6
+              class="w-20"
+              [bc-height]="20"
+              [bc-width]="2"
+              [bc-format]="'CODE128'"
+              [bc-value]="packageData.package_id"
+              [bc-display-value]="false"
+            >
+            </ngx-barcode6>
+            </span>{{packageData.package_id}}</td>
+            <td class="border px-4 py-4  text-center">{{packageData.description}}</td>
+            <td class="border px-4 py-4  text-center">{{packageData.price}}</td>
+            <td class="border px-4 py-4  text-center">{{packageData.receiver_name}}</td>
+            <td class="border px-4 py-4  text-center">{{packageData.receiver_address}}</td>
+            <td class="border px-4 py-4  text-center">{{packageData.receiver_contact_info}}</td>
+          </tr>
+          <!-- Repeat rows for a total of 9 -->
+        </tbody>
+      </table>
     </div>
   </div>
 
 
+
+
+
+
+ </div>
+
+    <div *ngIf="!packageData" class="p-4 mb-4 text-sm text-red-800 bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+      <span class="font-medium">Accès non autorisé !</span> Vous n'êtes pas autorisé à afficher cette page ou le contenu n'est pas disponible.
     </div>
-
-
 
 
 

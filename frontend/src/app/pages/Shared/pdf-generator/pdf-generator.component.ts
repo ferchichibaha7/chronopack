@@ -7,6 +7,7 @@ import { take } from 'rxjs';
 import { NgxBarcode6Module } from 'ngx-barcode6';
 import { MaterialModule } from '../../../material.module';
 import { TablerIconsModule } from 'angular-tabler-icons';
+import { PackageService } from 'src/app/services/packages.service';
 
 @Component({
   selector: 'app-pdf-generator',
@@ -17,9 +18,9 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 })
 export class PdfGeneratorComponent implements OnInit {
   @ViewChild('pdfContent') pdfContent!: ElementRef;
-  packageId:  string;
-  px2mmFactor : number
-  constructor(private route: ActivatedRoute, private router: Router) {
+  packageId: number | null = null; // Initialize with null  px2mmFactor : number
+  packageData : any
+  constructor(private route: ActivatedRoute, private router: Router, private packageService: PackageService) {
 
 
    }
@@ -29,17 +30,30 @@ export class PdfGeneratorComponent implements OnInit {
     this.getPackageId()
   }
 
-  getPackageId(){
+
+  getPackageId() {
     this.route.paramMap.pipe(take(1)).subscribe(params => {
-      // Extract the packageId from the route parameters
       const idFromRoute = params.get('id');
       if (idFromRoute) {
-        this.packageId = idFromRoute;
-        // Convert to number if needed
+        this.packageId = +idFromRoute; // Convert to number
+        this.fetchPackageById(this.packageId); // Call the method to fetch package by ID
       } else {
         // Handle case when packageId is not provided in the URL
       }
     });
+  }
+
+  fetchPackageById(packageId: number) {
+    this.packageService.getPackageById(packageId).subscribe(
+      (packageData) => {
+        // Handle the response data here
+        this.packageData = packageData;
+      },
+      (error) => {
+        // Handle error if any
+        console.error('Error fetching package by ID:', error);
+      }
+    );
   }
 
   public convetToPDF()

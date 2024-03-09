@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 
 import {  BehaviorSubject, Observable, of, switchMap } from 'rxjs';
 import { AuthUtils } from './auth.utils';
+import { AppconfigService } from '../services/appconfig.service';
 
 @Injectable({providedIn: 'root'})
 export class AuthService
@@ -13,7 +14,7 @@ export class AuthService
     /**
      * Constructor
      */
-    constructor( private _httpClient: HttpClient) { }
+    constructor( private _httpClient: HttpClient, private appConfigService: AppconfigService) { }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
@@ -53,7 +54,7 @@ export class AuthService
         const headers = new HttpHeaders({
         'X-Frontend-Angular': 'true'
         });
-        return this._httpClient.post(`http://localhost:5000/api/auth/login`, credentials, { headers }).pipe(
+        return this._httpClient.post(`${this.appConfigService.getBaseUrl()}/api/auth/login`, credentials, { headers }).pipe(
         switchMap((response: any) => {
         if (response.token ) {
         // Store the access token in the local storage
@@ -88,7 +89,7 @@ export class AuthService
         'Authorization': `Bearer ${this.accessToken}`
       });
       // Assuming you have an endpoint to fetch user data
-      return this._httpClient.get(`http://localhost:5000/api/auth/current`, { headers });
+      return this._httpClient.get(`${this.appConfigService.getBaseUrl()}/api/auth/current`, { headers });
     }
 
     getUserData(): Observable<any> {

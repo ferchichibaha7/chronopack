@@ -44,6 +44,65 @@ export class packageController {
     }
   };
 
+  public getPackageById =  async (...params) => {
+    const [req, res, next] = params;
+    try {
+      const packageId = req.params.id;
+  
+      // Define a base query object
+      const baseQuery = {
+        include: [
+          {
+            all: true,
+            nested: true,
+            attributes: { exclude: ["password"] } // Exclude password attribute
+          }
+        ],
+        attributes: { exclude: ["password"] }
+      };
+  
+      let queryCondition = {};
+  
+      // Check the role of the current user and customize the query condition accordingly
+      if (req['currentUser'].role_id === 5) { // Fournisseur
+        // Return packages where sender_id is the current user's id
+        queryCondition = { 
+          sender_id: req['currentUser'].id
+        };
+      } else if (req['currentUser'].role_id === 2 || req['currentUser'].role_id === 3) { // Magasinier or Manager
+        // Return packages where depot_id matches the current user's depot_id
+        queryCondition = {
+          depot_id: req['currentUser'].depot_id
+        };
+      }
+  
+      // Find the package by ID and condition
+      const foundPackage = await Package.findOne({
+        ...baseQuery,
+        where: { 
+          package_id: packageId,
+          ...queryCondition
+        }
+      });
+  
+      // If package is not found or conditions are not met, return 404
+      if (!foundPackage) {
+        return res.status(404).json({ error: 'Package not found or unauthorized' });
+      }
+  
+      // Fetch history for the package
+      await foundPackage.fetchPackageHistory();
+  
+      // Return the package with its associated history
+      res.status(200).json(foundPackage);
+    } catch (error) {
+      console.error('Error fetching package by ID:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+  
+  
+
   public getAllPackagesWithHistory = async (...params) => {
     const [req, res, next] = params;
     try {

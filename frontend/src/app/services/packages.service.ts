@@ -1,13 +1,14 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { AppconfigService } from './appconfig.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PackageService {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,private appConfigService: AppconfigService) {
   }
 
   getAllPackages(statusName?: string) {
@@ -24,14 +25,14 @@ export class PackageService {
        params = params.set('statusName', statusName);
      }
 
-    return this.http.get('http://localhost:5000/api/pack', { headers,params });
+    return this.http.get(`${this.appConfigService.getBaseUrl()}/api/pack`, { headers,params });
   }
 
   createPackage(packageData: any): Observable<any> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     });
-    return this.http.post('http://localhost:5000/api/pack/create', packageData, { headers });
+    return this.http.post(`${this.appConfigService.getBaseUrl()}/api/pack/create`, packageData, { headers });
   }
 
   updatePackageState(packageId: number, newStateId: number): Observable<any> {
@@ -41,6 +42,16 @@ export class PackageService {
     });
 
     // Pass the headers object as the third argument
-    return this.http.put<any>(`http://localhost:5000/api/pack/${packageId}/state/${newStateId}`, {}, { headers });
+    return this.http.put<any>(`${this.appConfigService.getBaseUrl()}/api/pack/${packageId}/state/${newStateId}`, {}, { headers });
+  }
+
+   // New method to fetch a package by its ID
+   getPackageById(packageId: number) {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    });
+
+    // Make a GET request to the API endpoint with the package ID
+    return this.http.get(`${this.appConfigService.getBaseUrl()}/api/pack/${packageId}`, { headers });
   }
 }

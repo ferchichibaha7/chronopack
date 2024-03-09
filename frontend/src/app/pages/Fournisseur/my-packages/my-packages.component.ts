@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MaterialModule } from 'src/app/material.module';
 import { HttpClient } from '@angular/common/http';
-import { PackageService } from './my-packages.service';
+import { PackageService } from '../../../services/packages.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { CoolDialogService, CoolDialogsModule } from '@angular-cool/dialogs';

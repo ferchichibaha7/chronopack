@@ -9,6 +9,7 @@ import { MyPackagesComponent } from './pages/Fournisseur/my-packages/my-packages
 import { PdfGeneratorComponent } from './pages/Shared/pdf-generator/pdf-generator.component';
 import { RoleGuard } from './auth/guards/role.guard';
 import { StockComponent } from './pages/Manager/stock/stock.component';
+import { EnAttenteComponent } from './pages/Manager/en-attente/en-attente.component';
 
 const routes: Routes = [
   {
@@ -46,13 +47,22 @@ const routes: Routes = [
         },
         component: MyPackagesComponent,
       },
+
       {
-        path: 'stock',
+        path: 'allpackages',
         canActivate: [RoleGuard],
         data: {
           expectedRoles: ['Manager', 'Magasinier'], // Specify the expected roles for this route
         },
         component: StockComponent,
+      },
+      {
+        path: 'en-attente',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRoles: ['Manager', 'Magasinier'], // Specify the expected roles for this route
+        },
+        component: EnAttenteComponent,
       },
       {
         path: 'dashboard',
@@ -74,10 +84,8 @@ const routes: Routes = [
 
       {
         path: 'extra',
-        canActivate: [RoleGuard],
-        data: {
-          expectedRoles: ['Administrateur'], // Specify the expected roles for this route
-        },
+
+
         loadChildren: () =>
           import('./pages/extra/extra.module').then((m) => m.ExtraModule),
       },
