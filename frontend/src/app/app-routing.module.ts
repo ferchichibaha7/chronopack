@@ -10,6 +10,7 @@ import { PdfGeneratorComponent } from './pages/Shared/pdf-generator/pdf-generato
 import { RoleGuard } from './auth/guards/role.guard';
 import { StockComponent } from './pages/Manager/stock/stock.component';
 import { EnAttenteComponent } from './pages/Manager/en-attente/en-attente.component';
+import { PickupComponent } from './pages/Manager/pickup/pickup.component';
 
 const routes: Routes = [
   {
@@ -63,6 +64,14 @@ const routes: Routes = [
           expectedRoles: ['Manager', 'Magasinier'], // Specify the expected roles for this route
         },
         component: EnAttenteComponent,
+      },
+      {
+        path: 'pickup',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRoles: ['Manager', 'Magasinier'], // Specify the expected roles for this route
+        },
+        component: PickupComponent,
       },
       {
         path: 'dashboard',

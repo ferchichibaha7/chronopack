@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { MatPaginator } from '@angular/material/paginator';
 import { PackageListComponent } from '../../Shared/package-list/package-list.component';
+import { Status } from '../../interfaces/status';
 @Component({
   selector: 'app-my-packages',
   standalone: true,
@@ -22,7 +23,12 @@ export class MyPackagesComponent implements OnInit {
   showCreate: boolean = false;
   selectedPackageId: number;
   packageForm: FormGroup;
-
+  statusData: Status[] = [
+    { id: 1, statusName: 'Brouillon',icon:{name:'note' , color:'gray'} },
+    { id: 2, statusName: 'En attente',icon:{name:'clock-pause' , color:'yellow'} },
+    { id: 9, statusName: 'Annulé',icon:{name:'circle-x' , color:'red'} },
+  ];
+  displayedColumns: string[] = ['package_id', 'description', 'price', 'receiver_name', 'receiver_address', 'receiver_contact_info','status', 'status_statusName','date','action'];
   constructor(private fb: FormBuilder,  private packageService:PackageService) { }
   @ViewChild(PackageListComponent ) packageList: PackageListComponent ;
   ngOnInit(): void {
