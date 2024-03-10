@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 import { CoolDialogService, CoolDialogsModule } from '@angular-cool/dialogs';
@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { PackageService } from '../../../services/packages.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { Status } from '../../interfaces/status';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-package-list',
@@ -25,12 +26,15 @@ export class PackageListComponent implements OnInit {
   @Input() statusOptions : Status[] = []
   @Input() from : string =''
   @Input() displayedColumns: string[] = [];
-
+  @Input() showSelect: boolean = false;
+  @Output() toggleFormVisibility: EventEmitter<boolean> = new EventEmitter<boolean>();
   showCreate: boolean = false;
   selectedPackageId: number;
   selectedStateId: any; // Define the property
   packages: any[] = [];
   packages_loading = false
+
+  selectedRows: any[] = [];
   dataSource = new MatTableDataSource<any>(); // Use 'any' type here
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -38,6 +42,8 @@ export class PackageListComponent implements OnInit {
   ngOnInit(): void {
     this.getPackages()
   }
+
+
   showSnackBar(message: string, color: string): void {
     this.snackBar.open(message, 'Fermer', {
       duration: 3000,
@@ -47,10 +53,26 @@ export class PackageListComponent implements OnInit {
     });
   }
 
+  toggleShowSelect() {
+    this.toggleFormVisibility.emit(!this.showSelect); // Emit the event with the new value (false in this case)
+  }
+
   downloadPdf(packageId: number) {
     const url = this.router.createUrlTree(['/bordereau', packageId]).toString();
     window.open(url, '_blank');
   }
+  toggleSelection(row: any) {
+    const index = this.selectedRows.indexOf(row);
+    if (index >= 0) {
+      this.selectedRows.splice(index, 1); // Remove row if already selected
+    } else {
+      this.selectedRows.push(row); // Add row to selectedRows array
+    }
+
+    console.log(this.selectedRows);
+
+  }
+
 
 
 
@@ -78,8 +100,6 @@ export class PackageListComponent implements OnInit {
         (packages: any) => {
           packages.reverse();
           this.dataSource = new MatTableDataSource(packages);
-          console.log(packages);
-
           this.dataSource.paginator = this.paginator;
           this.packages_loading = false;
         },
@@ -109,7 +129,8 @@ export class PackageListComponent implements OnInit {
   }
 
   async updatePackageStateFromButton (pack : any,state : any){
-    const statusId1 = this.statusOptions.find((status: Status) => status.id === state) as Status | undefined;
+    const alloptions = this.packageService.getAllStatusOptions()
+    const statusId1 = alloptions.find((status: Status) => status.id === state) as Status | undefined;
     const packageid = pack.package_id
     const result = await this._dialogsService.showDialog({
       titleText: 'Confirmation',

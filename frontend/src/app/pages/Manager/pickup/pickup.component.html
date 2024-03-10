@@ -1,2 +1,2 @@
-<app-package-list [from]="'depot'" [displayedColumns]="displayedColumns" [statusOptions]="[]" [status]="'Pickup'"></app-package-list>
-
+<app-package-list [showSelect]="showSelect" (toggleFormVisibility)="toggleFormVisibility($event)"
+  [from]="'depot'" [displayedColumns]="displayedColumns" [statusOptions]="[]" [status]="'Pickup'"></app-package-list>

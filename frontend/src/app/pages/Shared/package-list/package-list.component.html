@@ -1,3 +1,59 @@
+<div *ngIf="from == 'depot'" class="flex justify-end mb-8"> <!-- Add flex utilities to align buttons to the right -->
+  <button mat-raised-button
+  [ngClass]="showSelect ? 'bg-warning text-white' : 'bg-primary text-white'"
+  (click)="toggleShowSelect()">
+<mat-icon class="d-flex align-items-center" [ngClass]="{'animate-spin': showSelect}">
+<i-tabler name="scan" class="icon-16 d-flex"></i-tabler>
+</mat-icon>
+Select colis
+</button>
+
+
+
+</div>
+
+<mat-card *ngIf="from == 'depot' && showSelect" class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="flex flex-col w-100">
+      <mat-card-title>Select colis</mat-card-title>
+      <div class="w-100 mt-8">
+        <div  class="flex flex-col items-center">
+          <!-- First Row: Barcode Input and Button -->
+          <div class="w-full flex items-center  mb-4">
+            <img src="/assets/images/svgs/barcode.svg" alt="barcode" width="60" class="mr-4">
+
+              <mat-form-field class=" w-full mt-4 mr-4 "    appearance="outline">
+                <input #articleInput matInput   placeholder="Colis code">
+              </mat-form-field>
+              <button mat-raised-button class="mr-4 h-12 bg-blue-500 ">Ajouter</button>          </div>
+
+          <!-- Second Row: Empty Box Image -->
+          <div *ngIf="selectedRows.length == 0">
+            <img src="/assets/images/svgs/empty_box.svg" alt="empty box" width="300" class="mr-4">
+          </div>
+
+          <div *ngIf="selectedRows.length > 0" class="mt-2">
+            <ul class="list-disc">
+              <li *ngFor="let pack of selectedRows">{{pack.description}}</li>
+            </ul>
+          </div>
+
+        </div>
+
+
+
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+
+
+
+
+
+
+
 <mat-card class="cardWithShadow">
   <mat-card-content class="p-24">
     <div class="flex flex-col w-100">
@@ -14,6 +70,14 @@
           <table *ngIf="!packages_loading" class="min-w-full" mat-table [dataSource]="dataSource" >
 
             <!-- ID Column -->
+
+            <ng-container *ngIf="showSelect" matColumnDef="select">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let row">
+                <mat-checkbox (change)="toggleSelection(row)"></mat-checkbox>
+              </td>
+            </ng-container>
+
             <ng-container matColumnDef="package_id">
 
               <th mat-header-cell  *matHeaderCellDef > REF </th>
@@ -149,11 +213,11 @@
                     <mat-option *ngFor="let option of statusOptions"  [value]="option.id">{{ option.statusName }}</mat-option>
                   </mat-select>
                 </mat-form-field>
-                <button (click)="updatePackageState(row.package_id,10)"  class="leading-normal" *ngIf="row.status.id == 2 && from == 'depot'" mat-raised-button>  <mat-icon class="d-flex align-items-center"
+                <button (click)="updatePackageStateFromButton(row,10)"  class="leading-normal" *ngIf="row.status.id == 2 && from == 'depot'" mat-raised-button>  <mat-icon class="d-flex align-items-center"
                   ><i-tabler name="truck" class="icon-16 d-flex"></i-tabler></mat-icon
                 >Pickup</button>
 
-                <button (click)="updatePackageState(row.package_id,2)"  class="leading-normal" *ngIf="row.status.id == 10  && from == 'depot'" mat-raised-button>Annuler</button>
+                <button (click)="updatePackageStateFromButton(row,2)"  class="leading-normal" *ngIf="row.status.id == 10  && from == 'depot'" mat-raised-button>Annuler</button>
 
 
             </ng-container>
