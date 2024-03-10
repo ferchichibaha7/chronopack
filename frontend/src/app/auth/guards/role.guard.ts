@@ -33,10 +33,8 @@ export class RoleGuard implements CanActivate {
 
   async getUserRole(): Promise<string | null> {
     try {
-      const userData = await firstValueFrom(this.authService.userData$.pipe(
-        filter(value => value !== null)
-      )); // Await the first non-null value
-      return userData.role.role_name;
+      const userData = await firstValueFrom(this.authService.getUserData()); // Await the first non-null value
+      return userData ? userData.role.role_name : null;
     } catch (error) {
       console.error('Error fetching user data:', error);
       throw error; // Re-throw the error for handling in canActivate

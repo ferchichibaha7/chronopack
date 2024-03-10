@@ -73,6 +73,8 @@ const routes: Routes = [
         },
         component: PickupComponent,
       },
+      { path: '**', redirectTo: '/dashboard' },
+
       {
         path: 'dashboard',
         loadChildren: () =>
@@ -98,6 +100,8 @@ const routes: Routes = [
         loadChildren: () =>
           import('./pages/extra/extra.module').then((m) => m.ExtraModule),
       },
+       // Wildcard route to redirect undefined routes to home
+  { path: '**', redirectTo: '/dashboard' },
     ],
   },
   { path: 'bordereau/:id', component: PdfGeneratorComponent },

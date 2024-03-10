@@ -55,7 +55,8 @@ export class PackageListComponent implements OnInit {
 
 
   async onStateSelectionChange(event:any,pack:any){
-    const statusId1 = this.statusOptions.find((status: Status) => status.id === event.value) as Status | undefined;    const packageid = pack.package_id
+    const statusId1 = this.statusOptions.find((status: Status) => status.id === event.value) as Status | undefined;
+    const packageid = pack.package_id
     const result = await this._dialogsService.showDialog({
       titleText: 'Confirmation',
       questionText:`Êtes-vous sûr de vouloir modifier l'état du colis "${packageid}:${pack.description}" de "${pack.status.statusName}" à "${statusId1?.statusName}" ?`,
@@ -105,6 +106,22 @@ export class PackageListComponent implements OnInit {
 
   getStatusControl(row: any): FormControl {
     return new FormControl(row.status.id);
+  }
+
+  async updatePackageStateFromButton (pack : any,state : any){
+    const statusId1 = this.statusOptions.find((status: Status) => status.id === state) as Status | undefined;
+    const packageid = pack.package_id
+    const result = await this._dialogsService.showDialog({
+      titleText: 'Confirmation',
+      questionText:`Êtes-vous sûr de vouloir modifier l'état du colis "${packageid}:${pack.description}" de "${pack.status.statusName}" à "${statusId1?.statusName}" ?`,
+      confirmActionButtonText: 'Changer état',
+      cancelActionButtonText: 'Annuler',
+      confirmActionButtonColor: 'primary',
+    });
+
+    if (result.isConfirmed) {
+      this.updatePackageState(packageid,state)
+    }
   }
 
 
