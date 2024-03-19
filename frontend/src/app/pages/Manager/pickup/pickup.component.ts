@@ -17,6 +17,7 @@ export class PickupComponent {
  toggleFormVisibility(event : any) {
    this.showSelect = !this.showSelect; // Toggle the value of showSelect
    this.updateDisplayedColumns(); // Update displayedColumns based on the new value of showSelect
+
  }
 
  // Method to update displayedColumns based on the value of showSelect

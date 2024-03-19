@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 import { CoolDialogService, CoolDialogsModule } from '@angular-cool/dialogs';
@@ -33,17 +33,52 @@ export class PackageListComponent implements OnInit {
   selectedStateId: any; // Define the property
   packages: any[] = [];
   packages_loading = false
-
+  barcodeInput : any = ''
   selectedRows: any[] = [];
   dataSource = new MatTableDataSource<any>(); // Use 'any' type here
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor( private router: Router,private fb: FormBuilder, private http: HttpClient, private packageService:PackageService,private _dialogsService: CoolDialogService,private snackBar: MatSnackBar){}
+  constructor( private router: Router,private cdr: ChangeDetectorRef,private fb: FormBuilder, private http: HttpClient, private packageService:PackageService,private _dialogsService: CoolDialogService,private snackBar: MatSnackBar){}
   ngOnInit(): void {
     this.getPackages()
   }
 
+ // Host listener for keydown events on the document
+ @HostListener('document:keydown', ['$event'])
+ handleKeyboardEvent(event: KeyboardEvent) {
+   // Check if the key pressed is Enter (key code 13)
 
+   if (event.keyCode === 13) {
+    // Check if the scanned barcode ends with '|'
+if (this.barcodeInput.endsWith('|')) {
+  // Remove the '|' character from the end of the barcode
+  this.barcodeInput = this.barcodeInput.slice(0, -1);
+
+  this.addBybarcode()
+}
+
+console.log('Processed Barcode:', this.barcodeInput); // Output the processed barcode
+     this.barcodeInput = ''; // Clear the input field after handling the barcode
+   }
+ }
+
+ addBybarcode(){
+  const filteredPackages = this.dataSource.data.filter((pack: any) => pack.package_id == this.barcodeInput);
+  if (filteredPackages.length>0){
+    const packageToAdd = filteredPackages[0];
+  const existingPackageIndex = this.selectedRows.findIndex((row: any) => row.package_id === packageToAdd.package_id);
+
+  if (existingPackageIndex === -1) {
+    this.selectedRows.push(packageToAdd); // Add package to selectedRows if not already selected
+    this.barcodeInput = ''; // Clear the input field after handling the barcode
+
+  }
+  }
+
+ }
+ isSelected(row: any): boolean {
+  return this.selectedRows.indexOf(row) !== -1;
+}
   showSnackBar(message: string, color: string): void {
     this.snackBar.open(message, 'Fermer', {
       duration: 3000,
@@ -71,7 +106,10 @@ export class PackageListComponent implements OnInit {
 
     console.log(this.selectedRows);
 
+    // Manually trigger change detection to update checkbox state
+    this.cdr.detectChanges();
   }
+
 
 
 
