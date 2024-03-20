@@ -12,18 +12,19 @@ import { PackageService } from '../../../services/packages.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { Status } from '../../interfaces/status';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { NgxBarcode6Module } from 'ngx-barcode6';
 
 @Component({
   selector: 'app-package-list',
   standalone: true,
-  imports: [CommonModule, MaterialModule, FormsModule, ReactiveFormsModule,TablerIconsModule,CoolDialogsModule],
+  imports: [CommonModule, MaterialModule, NgxBarcode6Module,FormsModule, ReactiveFormsModule,TablerIconsModule,CoolDialogsModule],
   templateUrl: './package-list.component.html',
   styleUrls: ['./package-list.component.scss']
 })
 export class PackageListComponent implements OnInit {
 
   @Input() status: string; // Declare the input property
-  @Input() statusOptions : Status[] = []
+  statusOptions :any = []
   @Input() from : string =''
   @Input() displayedColumns: string[] = [];
   @Input() showSelect: boolean = false;
@@ -41,6 +42,7 @@ export class PackageListComponent implements OnInit {
   constructor( private router: Router,private cdr: ChangeDetectorRef,private fb: FormBuilder, private http: HttpClient, private packageService:PackageService,private _dialogsService: CoolDialogService,private snackBar: MatSnackBar){}
   ngOnInit(): void {
     this.getPackages()
+    this.statusOptions = this.packageService.getAllStatusOptions()
   }
 
  // Host listener for keydown events on the document
@@ -79,6 +81,13 @@ console.log('Processed Barcode:', this.barcodeInput); // Output the processed ba
  isSelected(row: any): boolean {
   return this.selectedRows.indexOf(row) !== -1;
 }
+
+deselectPackage(pack: any) {
+  const index = this.selectedRows.indexOf(pack);
+  if (index !== -1) {
+    this.selectedRows.splice(index, 1); // Retirer le package de selectedRows
+  }
+}
   showSnackBar(message: string, color: string): void {
     this.snackBar.open(message, 'Fermer', {
       duration: 3000,
@@ -115,8 +124,12 @@ console.log('Processed Barcode:', this.barcodeInput); // Output the processed ba
 
 
   async onStateSelectionChange(event:any,pack:any){
+    console.log(this.statusOptions);
+
     const statusId1 = this.statusOptions.find((status: Status) => status.id === event.value) as Status | undefined;
     const packageid = pack.package_id
+
+
     const result = await this._dialogsService.showDialog({
       titleText: 'Confirmation',
       questionText:`Êtes-vous sûr de vouloir modifier l'état du colis "${packageid}:${pack.description}" de "${pack.status.statusName}" à "${statusId1?.statusName}" ?`,
@@ -166,7 +179,9 @@ console.log('Processed Barcode:', this.barcodeInput); // Output the processed ba
     return new FormControl(row.status.id);
   }
 
-  async updatePackageStateFromButton (pack : any,state : any){
+
+
+  async updatePackageStateFromButton (pack : any,state : any,from:any){
     const alloptions = this.packageService.getAllStatusOptions()
     const statusId1 = alloptions.find((status: Status) => status.id === state) as Status | undefined;
     const packageid = pack.package_id
@@ -185,6 +200,8 @@ console.log('Processed Barcode:', this.barcodeInput); // Output the processed ba
 
 
   updatePackageState(package_id : any,state : any) {
+    console.log(state);
+
     this.packageService.updatePackageState(package_id,state)
     .subscribe(
       () => {
