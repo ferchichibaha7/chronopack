@@ -11,6 +11,7 @@ import { Role } from "./models/Role";
 import { Depot } from "./models/Depot";
 import { Status } from "./models/Status";
 import { User } from "./models/User";
+import { ReturnReason } from "./models/ReturnReason";
 
 const app = express();
 
@@ -21,6 +22,7 @@ sequelize.sync({logging:false}).then(async res=>{
   await createRolesAndAdminIfNotExist();
   await createDepotsIfNotExist();
   await createStatesIfNotExist();
+  await createReturnReasonsIfNotExist();
 });
 
 // Express configuration
@@ -128,5 +130,28 @@ async function createStatesIfNotExist(): Promise<void> {
     }
   } catch (error) {
     console.error('Error creating states:', error);
+  }
+}
+
+async function createReturnReasonsIfNotExist(): Promise<void> {
+  const reasonsToCreate = [
+    { reason_text: 'Pas de réponse' },
+    { reason_text: 'Téléphone injoignable' },
+    { reason_text: 'Client non sérieux' },
+    { reason_text: 'Annulé par le fournisseur' },
+    { reason_text: 'Annulé par le client' },
+    { reason_text: 'Colis daté' }
+  ];
+
+  try {
+    for (const reasonData of reasonsToCreate) {
+      const existingReason = await ReturnReason.findOne({ where: { reason_text: reasonData.reason_text } as any });
+      if (!existingReason) {
+        await ReturnReason.create(reasonData);
+        console.log(`Reason '${reasonData.reason_text}' created.`);
+      }
+    }
+  } catch (error) {
+    console.error('Error creating reasons:', error);
   }
 }

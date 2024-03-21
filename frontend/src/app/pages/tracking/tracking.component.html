@@ -1,0 +1,66 @@
+
+<div *ngIf="packageHist && packageHist.length>0" class="w-full">
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="p-24">
+      <mat-card-title class="text-left" >Suivi colis</mat-card-title>
+
+      <div class="timeline m-t-24 h-100 pb-12">
+        <div
+          class="timeline-item flex "
+          *ngFor="let stat of packageHist"
+        >
+          <div class="time text-left mat-subtitle-1 f-s-14 w-40">
+            {{ stat.createdAt | date:'short' }}
+          </div>
+          <div class="point d-flex align-items-center">
+            <span *ngIf="stat.state.id == 7 ||stat.state.id == 9 " class="timeline-badge border-error  m-y-8  "></span>
+            <span *ngIf="stat.state.id == 1 ||  stat.state.id == 3 || stat.state.id == 4 || stat.state.id == 5 || stat.state.id == 10 " class="timeline-badge border-primary  m-y-8  "></span>
+            <span *ngIf="stat.state.id == 2 " class="timeline-badge border-warning  m-y-8  "></span>
+            <span *ngIf="stat.state.id == 6 ||stat.state.id == 8 " class="timeline-badge border-success  m-y-8  "></span>
+
+            <span class="timline-border d-block"></span>
+          </div>
+          <div class="desc -mt-1 ">
+            <ng-template [ngIf]="stat.state.statusName" >
+
+
+              <span class="mat-subtitle-1 f-s-14 h-30 flex flex-row justify-center justify-center -mt-1">
+                <span [class]=" 'flex items-center justify-center h-8 w-8 mr-2'" >
+                  <mat-icon [style]="'color:'+getTextColor(stat.state.id)"  [class]="' flex items-center justify-center'"> <!-- Utilisez la classe text-white pour que l'icône soit blanche -->
+                    <i-tabler [name]="getIconName(stat.state.id)" class="icon-24"></i-tabler>
+                  </mat-icon>
+                </span>
+                <span>   {{
+                  stat.state.statusName
+                }}</span>
+
+
+              <span class="text-gray-500 ml-2" *ngIf="stat.reason">
+               ({{
+                  stat.reason.reason_text
+                }})
+              </span>
+             </span>
+            </ng-template>
+            <!--
+            <ng-template [ngIf]="stat.title">
+              <span class="mat-subtitle-1 f-s-14 lh-20 f-w-600 d-block">{{
+                stat.title
+              }}</span>
+            </ng-template>
+            <ng-template [ngIf]="stat.link">
+              <a href="#" class="text-primary text-decoration-none mat-body-1"
+                >#ML-3467</a
+              >
+            </ng-template>
+            -->
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div *ngIf="packageId && !packageHist" class="p-4 mb-4 text-sm text-red-800 bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+  <span class="font-medium">Accès non autorisé !</span> Vous n'êtes pas autorisé à afficher cette page ou le contenu n'est pas disponible.
+</div>

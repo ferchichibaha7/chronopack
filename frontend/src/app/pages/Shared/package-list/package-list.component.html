@@ -8,8 +8,6 @@
 Select colis
 </button>
 
-
-
 </div>
 
 <mat-card *ngIf="from == 'depot' && showSelect" class="cardWithShadow">
@@ -278,7 +276,7 @@ Select colis
                     ><i-tabler name="download" class="icon-16 d-flex"></i-tabler></mat-icon
                   >Bordereau
                 </button>
-                <button mat-menu-item>
+                <button  [routerLink]="['/tracking']" [queryParams]="{ packageid: row.package_id }" mat-menu-item>
                   <mat-icon class="d-flex align-items-center"
                     ><i-tabler
                       name="scan-eye"

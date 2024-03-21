@@ -11,6 +11,7 @@ export const navItems: NavItem[] = [
     route: '/dashboard',
 
   },
+
   {
     displayName: 'Utilisateurs',
     iconName: 'users',
@@ -46,6 +47,7 @@ export const navItems: NavItem[] = [
 
     ]
   },
+
   {
     displayName: 'Paramètres',
     iconName: 'settings',
@@ -63,6 +65,11 @@ export const navItems: NavItem[] = [
     iconName: 'package',
     route: '/allpackages',
     roles:['Manager','Magasinier']
+  },
+  {
+    displayName: 'Suivi colis',
+    iconName: 'scan-eye',
+    route: '/tracking',
   },
   {
     displayName: 'Stock',

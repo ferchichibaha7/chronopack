@@ -225,6 +225,7 @@ export class packageController {
                 .status(HttpStatusCodes.NOT_FOUND)
                 .json({ error: "Action not allowed" });
             }
+            
           } else if ([1, 2, 9].includes(newStateId)) {
             // Nouveaux états: Brouillon, En attente, Annulé
             if (
@@ -268,12 +269,26 @@ export class packageController {
       // Save the changes to the database
       await updatedPackage.save();
 
-      // Create a new package history entry
-      await PackageStateHistory.create({
+      const packageStateHistoryData = {
         package_id: packageId,
         state_id: newStateId,
         user_id: currentUser.id,
-      });
+      };
+
+
+        // Déterminer reasonId uniquement si currentUser.role_id est 5 et newStateId est égal à 7
+        if (currentUser.role_id == 5 && newStateId == 7) {
+          const reasonId = 4 /* Déterminez l'identifiant de la raison en fonction de votre logique */;
+          packageStateHistoryData['reason_id'] = reasonId;
+        }
+
+           // Déterminer depotId uniquement 
+           if  (newStateId == 7 || newStateId == 4) {
+            const depotId = currentUser.depot_id           
+            packageStateHistoryData['depot_id'] = depotId;
+          }
+      // Create a new package history entry
+      await PackageStateHistory.create(packageStateHistoryData);
 
       // Return the updated package
       res

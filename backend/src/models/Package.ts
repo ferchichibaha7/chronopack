@@ -37,9 +37,7 @@ export class Package extends Model<Package> {
   @Column
   status_id: number;
 
-  @ForeignKey(() => ReturnReason)
-  @Column
-  reason_id: number;
+
 
   @ForeignKey(() => Depot)
   @Column
@@ -54,8 +52,7 @@ export class Package extends Model<Package> {
   @BelongsTo(() => Status)
   status: Status;
 
-  @BelongsTo(() => ReturnReason)
-  reason: ReturnReason;
+
 
   @BelongsTo(() => Depot)
   depot: Depot;

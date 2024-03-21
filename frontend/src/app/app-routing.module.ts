@@ -11,6 +11,7 @@ import { RoleGuard } from './auth/guards/role.guard';
 import { StockComponent } from './pages/Manager/stock/stock.component';
 import { EnAttenteComponent } from './pages/Manager/en-attente/en-attente.component';
 import { PickupComponent } from './pages/Manager/pickup/pickup.component';
+import { TrackingComponent } from './pages/tracking/tracking.component';
 
 const routes: Routes = [
   {
@@ -39,6 +40,10 @@ const routes: Routes = [
           expectedRoles: ['Administrateur'], // Specify the expected roles for this route
         },
         component: UsersComponent,
+      },
+      {
+        path: 'tracking',
+        component: TrackingComponent,
       },
       {
         path: 'packages',

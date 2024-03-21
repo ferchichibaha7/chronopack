@@ -3,6 +3,7 @@ import { Package } from './Package';
 import { Status } from './Status';
 import { User } from './User';
 import { Depot } from './Depot';
+import { ReturnReason } from './ReturnReason';
 
 @Table
 export class PackageStateHistory extends Model<PackageStateHistory> {
@@ -31,6 +32,10 @@ export class PackageStateHistory extends Model<PackageStateHistory> {
   @Column
   depot_id: number;
 
+  @ForeignKey(() => ReturnReason)
+  @Column
+  reason_id: number;
+
   @BelongsTo(() => Package)
   package: Package;
 
@@ -45,4 +50,7 @@ export class PackageStateHistory extends Model<PackageStateHistory> {
 
   @BelongsTo(() => Depot, { foreignKey: 'depot_id', as: 'depot' }) // Belongs to the depot
   Depot: Depot;
+
+  @BelongsTo(() => ReturnReason)
+  reason: ReturnReason;
 }

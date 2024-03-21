@@ -7,7 +7,7 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { PackageService } from '../../../services/packages.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { Status } from '../../interfaces/status';
@@ -17,7 +17,7 @@ import { NgxBarcode6Module } from 'ngx-barcode6';
 @Component({
   selector: 'app-package-list',
   standalone: true,
-  imports: [CommonModule, MaterialModule, NgxBarcode6Module,FormsModule, ReactiveFormsModule,TablerIconsModule,CoolDialogsModule],
+  imports: [CommonModule, MaterialModule, RouterModule,NgxBarcode6Module,FormsModule, ReactiveFormsModule,TablerIconsModule,CoolDialogsModule],
   templateUrl: './package-list.component.html',
   styleUrls: ['./package-list.component.scss']
 })
