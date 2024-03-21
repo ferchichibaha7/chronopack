@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -7,6 +7,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { MaterialModule } from 'src/app/material.module';
 import { PackageService } from 'src/app/services/packages.service';
 import { take } from 'rxjs';
+import { NgxBarcode6Module } from 'ngx-barcode6';
 
 @Component({
   selector: 'app-tracking',
@@ -17,6 +18,7 @@ import { take } from 'rxjs';
     FormsModule,
     NgApexchartsModule,
     TablerIconsModule,
+    NgxBarcode6Module
   ],
   templateUrl: './tracking.component.html',
   styleUrls: ['./tracking.component.scss'],
@@ -25,6 +27,7 @@ export class TrackingComponent implements OnInit {
   packageId: string | null;
   packageData: any;
   packageHist: any;
+  barcodeInput : any = ''
   $primary = '#5d87ff';
   $accent = '#49beff';
   $warning = '#ffae1f';
@@ -169,4 +172,23 @@ export class TrackingComponent implements OnInit {
         return '';
     }
   }
+
+
+   // Host listener for keydown events on the document
+ @HostListener('document:keydown', ['$event'])
+ handleKeyboardEvent(event: KeyboardEvent) {
+   // Check if the key pressed is Enter (key code 13)
+
+   if (event.keyCode === 13) {
+    // Check if the scanned barcode ends with '|'
+if (this.barcodeInput.endsWith('|')) {
+  // Remove the '|' character from the end of the barcode
+  this.barcodeInput = this.barcodeInput.slice(0, -1);
+
+  this.fetchPackageById(this.barcodeInput)
+}
+
+     this.barcodeInput = ''; // Clear the input field after handling the barcode
+   }
+ }
 }

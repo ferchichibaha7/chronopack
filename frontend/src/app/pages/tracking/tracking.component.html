@@ -1,15 +1,109 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="flex flex-col w-100">
+      <mat-card-title>Select colis</mat-card-title>
+      <div class="w-100 mt-8">
+        <div  class="flex flex-col items-center">
+          <!-- First Row: Barcode Input and Button -->
+          <div class="w-full flex items-center  mb-4">
+              <!--
+            <img src="/assets/images/svgs/barcode.svg" alt="barcode" width="60" class="mr-4">
+-->
+              <mat-form-field class=" w-full mt-4 mr-4 "    appearance="outline">
+                <input  matInput type="text" placeholder="Package code" [(ngModel)]="barcodeInput">
+                </mat-form-field>
+              <button (click)="fetchPackageById(barcodeInput)" mat-raised-button class="mr-4 h-12 bg-blue-500 ">Suivi</button>          </div>
+
+          <!-- Second Row: Empty Box Image -->
+          <div *ngIf="!packageData">
+            <img src="/assets/images/svgs/empty_box.svg" alt="empty box" width="150" class="mr-4">
+          </div>
+
+          <div *ngIf="packageData" class="mt-2 w-full">
+            <div class="grid gap-4 md:grid-cols-1 lg:grid-cols-2">
+
+            </div>
+          </div>
+
+
+        </div>
+
+
+
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
 
 <div *ngIf="packageHist && packageHist.length>0" class="w-full">
-  <mat-card class="cardWithShadow">
-    <mat-card-content class="p-24">
+  <mat-card class="cardWithShadow pb-8">
+    <mat-card-content class="p-24 pb-18">
       <mat-card-title class="text-left" >Suivi colis</mat-card-title>
+      <div class="grid gap-8 md:grid-cols-1 lg:grid-cols-2">
+        <div class="m-t-24 h-100  pb-12 p-24 border rounded hover:shadow-lg ">
+          <!-- Grid items -->
 
-      <div class="timeline m-t-24 h-100 pb-12">
+          <div class="flex flex-row gap-12 items-center w-72 mr-8  ">
+            <ngx-barcode6
+
+            [bc-height]="20"
+            [bc-width]="1"
+            [bc-font-size]="11"
+            [bc-format]="'CODE128'"
+            [bc-value]="packageData.package_id"
+            [bc-display-value]="true"
+          >
+          </ngx-barcode6>
+            <img
+              src="/assets/images/backgrounds/package.png"
+              alt="imgae"
+              class="w-8 h-8 "
+              [class.grayscale]="packageData.status.id == 9">
+            <div class="flex flex-col ">
+              <h5 class="leading-normal font-semibold">{{ packageData.description }}</h5>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-1 lg:grid-cols-1 gap-16 divide-y">
+
+            <div class="flex flex-col gap-4 pt-8">
+              <div class="leading-normal font-semibold">Expéditeur</div>
+              <div>{{ packageData.sender.username }}</div>
+            </div>
+            <div class="flex flex-col gap-4  pt-4">
+              <div class="leading-normal font-semibold">Prix</div>
+              <div>{{ packageData.price }}</div>
+            </div>
+            <div class="flex flex-col gap-4 pt-4">
+              <div class="leading-normal font-semibold">Destinataire</div>
+              <div>{{ packageData.receiver_name }}</div>
+            </div>
+            <div class="flex flex-col gap-4 pt-4">
+              <div class="leading-normal font-semibold">Adresse</div>
+              <div>{{ packageData.receiver_address }}</div>
+            </div>
+            <div class="flex flex-col gap-4 pt-4">
+              <div class="leading-normal font-semibold">Téléphone</div>
+              <div>{{ packageData.receiver_contact_info }}</div>
+            </div>
+            <div class="flex flex-col gap-4 pt-4">
+              <div class="leading-normal font-semibold">Date</div>
+              <div>{{ packageData.createdAt | date:'short' }}</div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+
+      <div class="timeline p-20  m-t-24 h-100 pb-12 border rounded ">
         <div
           class="timeline-item flex "
           *ngFor="let stat of packageHist"
         >
-          <div class="time text-left mat-subtitle-1 f-s-14 w-40">
+          <div class="time text-left mat-subtitle-1 f-s-14 md:w-40 w-20 overflow-x-auto">
             {{ stat.createdAt | date:'short' }}
           </div>
           <div class="point d-flex align-items-center">
@@ -20,12 +114,12 @@
 
             <span class="timline-border d-block"></span>
           </div>
-          <div class="desc -mt-1 ">
+          <div class="desc -mt-1 w-18 md:w-70">
             <ng-template [ngIf]="stat.state.statusName" >
 
 
-              <span class="mat-subtitle-1 f-s-14 h-30 flex flex-row justify-center justify-center -mt-1">
-                <span [class]=" 'flex items-center justify-center h-8 w-8 mr-2'" >
+              <span class="mat-subtitle-1 f-s-14 h-30 flex flex-row justify-start justify-start -mt-1">
+                <span [class]=" 'flex items-start justify-center h-8 w-8 mr-2'" >
                   <mat-icon [style]="'color:'+getTextColor(stat.state.id)"  [class]="' flex items-center justify-center'"> <!-- Utilisez la classe text-white pour que l'icône soit blanche -->
                     <i-tabler [name]="getIconName(stat.state.id)" class="icon-24"></i-tabler>
                   </mat-icon>
@@ -33,14 +127,30 @@
                 <span>   {{
                   stat.state.statusName
                 }}</span>
-
-
-              <span class="text-gray-500 ml-2" *ngIf="stat.reason">
-               ({{
-                  stat.reason.reason_text
-                }})
-              </span>
+                    <span class="text-gray-500 ml-2 mb-8" *ngIf="stat.reason">
+                      ({{
+                         stat.reason.reason_text
+                       }})
+                     </span>
+                     <span class="text-gray-500 ml-2 mb-8" *ngIf="stat.coursier">
+                      ({{
+                         stat.coursier.username
+                       }})
+                     </span>
+                     <span class="text-gray-500 ml-2 mb-8" *ngIf="stat.depot &&  stat.state.id == 4">
+                      ({{
+                         stat.depot.depot_name
+                       }})
+                     </span>
+                     <span class="text-gray-500 ml-2 mb-8" *ngIf="stat.depot &&  stat.state.id == 3">
+                      ({{
+                        stat.user.depot.depot_name
+                      }} -> {{
+                         stat.depot.depot_name
+                       }})
+                     </span>
              </span>
+
             </ng-template>
             <!--
             <ng-template [ngIf]="stat.title">
@@ -56,6 +166,11 @@
             -->
           </div>
         </div>
+      </div>
+
+
+
+
       </div>
     </mat-card-content>
   </mat-card>
