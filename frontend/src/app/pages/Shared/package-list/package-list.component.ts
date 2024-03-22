@@ -46,7 +46,10 @@ export class PackageListComponent implements OnInit {
   constructor(private userService:UserService, private router: Router,private cdr: ChangeDetectorRef,private fb: FormBuilder, private http: HttpClient, private packageService:PackageService,private _dialogsService: CoolDialogService,private snackBar: MatSnackBar){}
   ngOnInit(): void {
     this.getPackages()
-    this.loadUsers('coursier')
+    if(this.status == 'En stock' && this.from == 'depot'){
+      this.loadUsers('coursier')
+    }
+
     this.statusOptions = this.packageService.getAllStatusOptions()
   }
 
@@ -153,7 +156,11 @@ deselectPackage(pack: any) {
     if (this.status) {
       this.packageService.getAllPackages(this.status).subscribe(
         (packages: any) => {
-          packages.reverse();
+          packages.sort((a:any, b:any) => {
+            const dateA = new Date(a.updatedAt).getTime();
+            const dateB = new Date(b.updatedAt).getTime();
+            return dateB - dateA; // Sort in descending order (latest first)
+          });
           this.dataSource = new MatTableDataSource(packages);
           this.dataSource.paginator = this.paginator;
           this.packages_loading = false;
