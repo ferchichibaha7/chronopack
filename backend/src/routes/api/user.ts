@@ -15,7 +15,7 @@ const validateOptions =   [
 router.get( "/administrateur",auth,roleAuthorization(['Administrateur']),(...params) => ctrl.getAllAdmins(...params));
 router.get( "/manager",auth,roleAuthorization(['Administrateur']),(...params) => ctrl.getAllManager(...params));
 router.get( "/magasinier",auth,roleAuthorization(['Administrateur']),(...params) => ctrl.getAllMagasinier(...params));
-router.get( "/coursier",auth,roleAuthorization(['Administrateur']),(...params) => ctrl.getAllCoursier(...params));
+router.get( "/coursier",auth,roleAuthorization(['Administrateur','Manager','Magasinier']),(...params) => ctrl.getAllCoursier(...params));
 router.get( "/fournisseur",auth,roleAuthorization(['Administrateur']),(...params) => ctrl.getAllFournisseur(...params));
 
 

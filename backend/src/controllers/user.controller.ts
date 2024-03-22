@@ -54,17 +54,33 @@ export class userController {
   public getAllCoursier = async (...params) => {
     const [req, res, next] = params;
     try {
-      const coursier = await User.findAll({
-        where: { role_id: 4 } as any, // Assuming role_id 4 represents the coursier role
-        include: [{ all: true }],
-        attributes: { exclude: ["password"] }
-      });
+      let coursier;
+      const currentUserRoleId = req["currentUser"].role_id;
+  
+      if (currentUserRoleId === 1) {
+        // Admin role, get all courssier
+        coursier = await User.findAll({
+          where: { role_id: 4 } as any, // Assuming role_id 4 represents the coursier role
+          include: [{ all: true }],
+          attributes: { exclude: ["password"] }
+        });
+      } else if (currentUserRoleId === 2 || currentUserRoleId === 3) {
+        // Magasinier or Manager role, get the Coursier where currentUser.depot_id == Coursier.depot_id
+        const currentUserDepotId = req["currentUser"].depot_id;
+        coursier = await User.findAll({
+          where: { role_id: 4, depot_id: currentUserDepotId } as any, // Assuming role_id 4 represents the coursier role
+          include: [{ all: true }],
+          attributes: { exclude: ["password"] }
+        });
+      }
+  
       res.json(coursier);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" });
     }
   };
+  
 
   public getAllFournisseur = async (...params) => {
     const [req, res, next] = params;

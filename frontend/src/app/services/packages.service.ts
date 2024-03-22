@@ -35,16 +35,19 @@ export class PackageService {
     return this.http.post(`${this.appConfigService.getBaseUrl()}/api/pack/create`, packageData, { headers });
   }
 
-  updatePackageState(packageId: number, newStateId: number): Observable<any> {
+  updatePackageStates(packageIds: any[], newStateId: any): Observable<any> {
     const token = localStorage.getItem('accessToken');
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
 
-    // Pass the headers object as the third argument
-    return this.http.put<any>(`${this.appConfigService.getBaseUrl()}/api/pack/${packageId}/state/${newStateId}`, {}, { headers });
-  }
+    const body = {
+      packageIds: packageIds,
+      newStateId: newStateId
+    };
 
+    return this.http.put<any>(`${this.appConfigService.getBaseUrl()}/api/pack/states`, body, { headers });
+  }
    // New method to fetch a package by its ID
    getPackageById(packageId: number) {
     const headers = new HttpHeaders({

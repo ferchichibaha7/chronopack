@@ -12,6 +12,7 @@ import { StockComponent } from './pages/Manager/stock/stock.component';
 import { EnAttenteComponent } from './pages/Manager/en-attente/en-attente.component';
 import { PickupComponent } from './pages/Manager/pickup/pickup.component';
 import { TrackingComponent } from './pages/tracking/tracking.component';
+import { AllpackagesComponent } from './pages/Manager/allpackages/allpackages.component';
 
 const routes: Routes = [
   {
@@ -60,7 +61,7 @@ const routes: Routes = [
         data: {
           expectedRoles: ['Manager', 'Magasinier'], // Specify the expected roles for this route
         },
-        component: StockComponent,
+        component: AllpackagesComponent,
       },
       {
         path: 'en-attente',
@@ -77,6 +78,14 @@ const routes: Routes = [
           expectedRoles: ['Manager', 'Magasinier'], // Specify the expected roles for this route
         },
         component: PickupComponent,
+      },
+      {
+        path: 'stock',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRoles: ['Manager', 'Magasinier'], // Specify the expected roles for this route
+        },
+        component: StockComponent,
       },
 
       {

@@ -39,8 +39,8 @@
   <mat-card class="cardWithShadow pb-8">
     <mat-card-content class="p-24 pb-18">
       <mat-card-title class="text-left" >Suivi colis</mat-card-title>
-      <div class="grid gap-8 md:grid-cols-1 lg:grid-cols-2">
-        <div class="m-t-24 h-100  pb-12 p-24 border rounded hover:shadow-lg ">
+      <div class="grid gap-24 md:grid-cols-1 lg:grid-cols-3 ">
+        <div class="m-t-24 h-100  pb-12 p-24 border rounded hover:shadow-lg  "  style="max-height: 580px;">
           <!-- Grid items -->
 
           <div class="flex flex-row gap-12 items-center w-72 mr-8  ">
@@ -98,7 +98,7 @@
 
 
 
-      <div class="timeline p-20  m-t-24 h-100 pb-12 border rounded ">
+      <div class="timeline p-20  m-t-24 h-100 pb-12 border rounded col-span-2 hover:shadow-lg ">
         <div
           class="timeline-item flex "
           *ngFor="let stat of packageHist"

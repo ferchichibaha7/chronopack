@@ -13,6 +13,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Status } from '../../interfaces/status';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { NgxBarcode6Module } from 'ngx-barcode6';
+import { UserService } from '../../admin/users/user.service';
 
 @Component({
   selector: 'app-package-list',
@@ -25,6 +26,7 @@ export class PackageListComponent implements OnInit {
 
   @Input() status: string; // Declare the input property
   statusOptions :any = []
+  coursiers : any = []
   @Input() from : string =''
   @Input() displayedColumns: string[] = [];
   @Input() showSelect: boolean = false;
@@ -36,12 +38,15 @@ export class PackageListComponent implements OnInit {
   packages_loading = false
   barcodeInput : any = ''
   selectedRows: any[] = [];
+  selectedChoice: number = 5; // Default value is "Livré"
+  selectedDelivery:any
   dataSource = new MatTableDataSource<any>(); // Use 'any' type here
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor( private router: Router,private cdr: ChangeDetectorRef,private fb: FormBuilder, private http: HttpClient, private packageService:PackageService,private _dialogsService: CoolDialogService,private snackBar: MatSnackBar){}
+  constructor(private userService:UserService, private router: Router,private cdr: ChangeDetectorRef,private fb: FormBuilder, private http: HttpClient, private packageService:PackageService,private _dialogsService: CoolDialogService,private snackBar: MatSnackBar){}
   ngOnInit(): void {
     this.getPackages()
+    this.loadUsers('coursier')
     this.statusOptions = this.packageService.getAllStatusOptions()
   }
 
@@ -59,7 +64,6 @@ if (this.barcodeInput.endsWith('|')) {
   this.addBybarcode()
 }
 
-console.log('Processed Barcode:', this.barcodeInput); // Output the processed barcode
      this.barcodeInput = ''; // Clear the input field after handling the barcode
    }
  }
@@ -202,7 +206,7 @@ deselectPackage(pack: any) {
   updatePackageState(package_id : any,state : any) {
     console.log(state);
 
-    this.packageService.updatePackageState(package_id,state)
+    this.packageService.updatePackageStates([package_id],state)
     .subscribe(
       () => {
         this.getPackages()
@@ -233,4 +237,43 @@ deselectPackage(pack: any) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
     // Implement logic to filter packages based on user input
   }
+
+  sendToStock(){
+    if(this.selectedRows.length>0){
+    let packageIds = this.selectedRows.map(pkg => pkg.package_id);
+    this.packageService.updatePackageStates(packageIds,4)
+    .subscribe(
+      () => {
+        this.getPackages()
+        this.selectedRows = []
+        this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
+
+        // Optionally, perform any other actions after updating the package state
+      },
+      (error: any) => {
+        console.error('Error updating package state:', error);
+        this.showSnackBar('Erreur lors de la mise à jour du statuts des colis.', 'red');
+        // Handle error appropriately
+      }
+    );
+  }
+
+  }
+
+
+  loadUsers(role: any): void {
+
+    this.userService.getUsersByRole(role).subscribe(
+      (users: any) => {
+        users.reverse();
+        this.coursiers = users
+      },
+      (error: any) => {
+        console.error('Error fetching users:', error);
+      }
+    );
+  }
+
+  onchoiceAction(ev:any){}
+
 }

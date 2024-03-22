@@ -17,7 +17,7 @@ router.get("/", auth, (...params) => ctrl.getAllPackagesWithHistory(...params));
 router.post("/create", auth, (...params) => ctrl.createPackage(...params));
 
 // Update package state
-router.put("/:packageId/state/:newStateId", auth, (...params) => ctrl.updatePackageState(...params));
+router.put("/states", auth, (...params) => ctrl.updatePackageStates(...params));
 
 // Get package by ID
 router.get("/:id", auth, (...params) => ctrl.getPackageById(...params));

@@ -202,106 +202,55 @@ export class packageController {
     }
   };
 
-  public async updatePackageState(...params) {
-    const [req, res, next] = params;
+  
+  public async updatePackageStates(req, res, next) {
     const currentUser = req["currentUser"];
+    const { packageIds, newStateId } = req.body; // Assuming you send packageIds and newStateId in the request body
+  
     try {
-      const { packageId, newStateId } = req.params;
-
-      // Update the state of the package
-      const updatedPackage = await Package.findByPk(packageId);
-      if (!updatedPackage) {
-        return res
-          .status(HttpStatusCodes.NOT_FOUND)
-          .json({ error: "Package not found" });
-      }
-
-      switch (currentUser.role_id) {
-        case 5:
-          if (newStateId === 7) {
-            // Nouvel état: Retourné
-            if ([3, 5, 10].includes(updatedPackage.status_id)) {
-              return res
-                .status(HttpStatusCodes.NOT_FOUND)
-                .json({ error: "Action not allowed" });
-            }
-            
-          } else if ([1, 2, 9].includes(newStateId)) {
-            // Nouveaux états: Brouillon, En attente, Annulé
-            if (
-              updatedPackage.status_id === 7 ||
-              updatedPackage.status_id === 10
-            ) {
-              
-              return res
-                .status(HttpStatusCodes.NOT_FOUND)
-                .json({ error: "Action not allowed" });
-            }
-          } 
-          if (updatedPackage.sender_id !== currentUser.id) {
-            return res
-              .status(HttpStatusCodes.FORBIDDEN)
-              .json({ error: "Unauthorized action" });
-          }
-          break;
-
-        case 2: // Fournisseur
-        case 3: // Fournisseur
-          if (updatedPackage.depot_id !== currentUser.depot_id) {
-            return res
-              .status(HttpStatusCodes.FORBIDDEN)
-              .json({ error: "Unauthorized action" });
-          }
-          break;
-
-        default:
-          if (updatedPackage.sender_id !== currentUser.id) {
-            return res
-              .status(HttpStatusCodes.FORBIDDEN)
-              .json({ error: "Unauthorized action" });
-          }
-          break;
-      }
-
-      // Update the package's state
-      updatedPackage.status_id = newStateId;
-
-      // Save the changes to the database
-      await updatedPackage.save();
-
-      const packageStateHistoryData = {
-        package_id: packageId,
-        state_id: newStateId,
-        user_id: currentUser.id,
-      };
-
-
-        // Déterminer reasonId uniquement si currentUser.role_id est 5 et newStateId est égal à 7
+      // Loop through each package ID and update its state
+      for (const packageId of packageIds) {
+        // Update the state of the package
+        const updatedPackage = await Package.findByPk(packageId);
+        if (!updatedPackage) {
+          return res.status(HttpStatusCodes.NOT_FOUND).json({ error: `Package with ID ${packageId} not found` });
+        }
+  
+        // Add your state validation logic here (switch statement, role checks, etc.)
+  
+        // Update the package's state
+        updatedPackage.status_id = newStateId;
+  
+        // Save the changes to the database
+        await updatedPackage.save();
+  
+        const packageStateHistoryData = {
+          package_id: packageId,
+          state_id: newStateId,
+          user_id: currentUser.id,
+        };
+  
+        // Determine reasonId and depotId based on your logic
         if (currentUser.role_id == 5 && newStateId == 7) {
-          const reasonId = 4 /* Déterminez l'identifiant de la raison en fonction de votre logique */;
+          const reasonId = 4; // Determine the reason ID based on your logic
           packageStateHistoryData['reason_id'] = reasonId;
         }
-
-           // Déterminer depotId uniquement 
-           if  (newStateId == 7 || newStateId == 4) {
-            const depotId = currentUser.depot_id           
-            packageStateHistoryData['depot_id'] = depotId;
-          }
-      // Create a new package history entry
-      await PackageStateHistory.create(packageStateHistoryData);
-
-      // Return the updated package
-      res
-        .status(HttpStatusCodes.OK)
-        .json({
-          message: "Package state updated successfully",
-          updatedPackage,
-        });
+  
+        if (newStateId == 7 || newStateId == 4) {
+          const depotId = currentUser.depot_id;
+          packageStateHistoryData['depot_id'] = depotId;
+        }
+  
+        // Create a new package history entry
+        await PackageStateHistory.create(packageStateHistoryData);
+      }
+  
+      // Return success response
+      res.status(HttpStatusCodes.OK).json({ message: "Package states updated successfully" });
     } catch (error) {
-      console.error("Error updating package state:", error);
-      res
-        .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: "Internal server error" });
+      console.error("Error updating package states:", error);
+      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
     }
   }
+  
 }

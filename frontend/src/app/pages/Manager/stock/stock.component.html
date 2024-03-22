@@ -1,2 +1,3 @@
 
-<app-package-list [from]="'depot'" [displayedColumns]="displayedColumns"></app-package-list>
+<app-package-list  [showSelect]="showSelect" (toggleFormVisibility)="toggleFormVisibility($event)"
+[from]="'depot'" [displayedColumns]="displayedColumns"  [status]="'En stock'"></app-package-list>
