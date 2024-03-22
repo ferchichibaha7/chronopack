@@ -35,16 +35,21 @@ export class PackageService {
     return this.http.post(`${this.appConfigService.getBaseUrl()}/api/pack/create`, packageData, { headers });
   }
 
-  updatePackageStates(packageIds: any[], newStateId: any): Observable<any> {
-    const token = localStorage.getItem('accessToken');
+  updatePackageStates(packageIds: any[], newStateId: any,selectedDelivery?:any,depot_id?:any): Observable<any> {
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     });
 
-    const body = {
+    let body :any= {
       packageIds: packageIds,
       newStateId: newStateId
     };
+    if (selectedDelivery){
+      body['coursier_id'] = selectedDelivery
+    }
+    if (depot_id){
+      body['depot_id'] = depot_id
+    }
 
     return this.http.put<any>(`${this.appConfigService.getBaseUrl()}/api/pack/states`, body, { headers });
   }

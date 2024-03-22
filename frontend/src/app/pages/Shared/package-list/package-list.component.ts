@@ -14,6 +14,7 @@ import { Status } from '../../interfaces/status';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { NgxBarcode6Module } from 'ngx-barcode6';
 import { UserService } from '../../admin/users/user.service';
+import { DepotService } from 'src/app/services/depot.service';
 
 @Component({
   selector: 'app-package-list',
@@ -27,6 +28,7 @@ export class PackageListComponent implements OnInit {
   @Input() status: string; // Declare the input property
   statusOptions :any = []
   coursiers : any = []
+  depots : any = []
   @Input() from : string =''
   @Input() displayedColumns: string[] = [];
   @Input() showSelect: boolean = false;
@@ -40,14 +42,17 @@ export class PackageListComponent implements OnInit {
   selectedRows: any[] = [];
   selectedChoice: number = 5; // Default value is "Livré"
   selectedDelivery:any
+  selectedDepot:any
   dataSource = new MatTableDataSource<any>(); // Use 'any' type here
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private userService:UserService, private router: Router,private cdr: ChangeDetectorRef,private fb: FormBuilder, private http: HttpClient, private packageService:PackageService,private _dialogsService: CoolDialogService,private snackBar: MatSnackBar){}
+  constructor(private DepotService : DepotService, private userService:UserService, private router: Router,private cdr: ChangeDetectorRef,private fb: FormBuilder, private http: HttpClient, private packageService:PackageService,private _dialogsService: CoolDialogService,private snackBar: MatSnackBar){
+  }
   ngOnInit(): void {
     this.getPackages()
     if(this.status == 'En stock' && this.from == 'depot'){
       this.loadUsers('coursier')
+      this.loadDepots()
     }
 
     this.statusOptions = this.packageService.getAllStatusOptions()
@@ -159,8 +164,13 @@ deselectPackage(pack: any) {
           packages.sort((a:any, b:any) => {
             const dateA = new Date(a.updatedAt).getTime();
             const dateB = new Date(b.updatedAt).getTime();
-            return dateB - dateA; // Sort in descending order (latest first)
+
+
+            return dateB -dateA   ; // Sort in descending order (latest first)
+
           });
+          console.log(packages);
+
           this.dataSource = new MatTableDataSource(packages);
           this.dataSource.paginator = this.paginator;
           this.packages_loading = false;
@@ -173,7 +183,14 @@ deselectPackage(pack: any) {
     } else {
       this.packageService.getAllPackages().subscribe(
         (packages: any) => {
-          packages.reverse();
+          packages.sort((a:any, b:any) => {
+            const dateA = new Date(a.updatedAt).getTime();
+            const dateB = new Date(b.updatedAt).getTime();
+
+
+            return dateB -dateA    ; // Sort in descending order (latest first)
+
+          });
           this.dataSource = new MatTableDataSource(packages);
           this.dataSource.paginator = this.paginator;
           this.packages_loading = false;
@@ -274,13 +291,70 @@ deselectPackage(pack: any) {
       (users: any) => {
         users.reverse();
         this.coursiers = users
+        this.selectedDelivery = this.coursiers.length > 0 ? this.coursiers[0].id : null;
+
       },
       (error: any) => {
-        console.error('Error fetching users:', error);
+        console.error('Error fetching coursiers:', error);
+      }
+    );
+  }
+  loadDepots(): void {
+
+    this.DepotService.getAllDepots().subscribe(
+      (depots: any) => {
+        this.depots = depots
+        this.selectedDepot = this.depots.length > 0 ? this.depots[0].depot_id : null;
+
+      },
+      (error: any) => {
+        console.error('Error fetching depots:', error);
       }
     );
   }
 
   onchoiceAction(ev:any){}
+  sendfromStock(from:string){
+    if(from == 'delivery'){
+      if(this.selectedRows.length>0){
+        let packageIds = this.selectedRows.map(pkg => pkg.package_id);
+        this.packageService.updatePackageStates(packageIds,5,this.selectedDelivery)
+        .subscribe(
+          () => {
+            this.getPackages()
+            this.selectedRows = []
+            this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
+
+            // Optionally, perform any other actions after updating the package state
+          },
+          (error: any) => {
+            console.error('Error updating package state:', error);
+            this.showSnackBar('Erreur lors de la mise à jour du statuts des colis.', 'red');
+            // Handle error appropriately
+          }
+        );
+      }
+    }
+    else{
+      if(this.selectedRows.length>0){
+        let packageIds = this.selectedRows.map(pkg => pkg.package_id);
+        this.packageService.updatePackageStates(packageIds,3,null,this.selectedDepot)
+        .subscribe(
+          () => {
+            this.getPackages()
+            this.selectedRows = []
+            this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
+
+            // Optionally, perform any other actions after updating the package state
+          },
+          (error: any) => {
+            console.error('Error updating package state:', error);
+            this.showSnackBar('Erreur lors de la mise à jour du statuts des colis.', 'red');
+            // Handle error appropriately
+          }
+        );
+      }
+    }
+  }
 
 }

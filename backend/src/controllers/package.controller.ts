@@ -202,10 +202,10 @@ export class packageController {
     }
   };
 
-  
+
   public async updatePackageStates(req, res, next) {
     const currentUser = req["currentUser"];
-    const { packageIds, newStateId } = req.body; // Assuming you send packageIds and newStateId in the request body
+    const { packageIds, newStateId,coursier_id,depot_id } = req.body; // Assuming you send packageIds and newStateId in the request body
   
     try {
       // Loop through each package ID and update its state
@@ -235,6 +235,16 @@ export class packageController {
           const reasonId = 4; // Determine the reason ID based on your logic
           packageStateHistoryData['reason_id'] = reasonId;
         }
+
+           // Determine reasonId and depotId based on your logic
+           if ( (currentUser.role_id == 2 || currentUser.role_id == 3 ) && newStateId == 5 && coursier_id) {
+            packageStateHistoryData['coursier_id'] = coursier_id;
+          }
+
+            // Determine reasonId and depotId based on your logic
+            if ( (currentUser.role_id == 2 || currentUser.role_id == 3 ) && newStateId == 3 && depot_id) {
+              packageStateHistoryData['depot_id'] = depot_id;
+            }
   
         if (newStateId == 7 || newStateId == 4) {
           const depotId = currentUser.depot_id;

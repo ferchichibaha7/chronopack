@@ -15,14 +15,14 @@ export class UserService {
 
   getUsersByRole(role: string): Observable<User[]> {
     const headers = new HttpHeaders({
-      'Authorization': this.token
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     });
     return this.http.get<User[]>(`${this.appConfigService.getBaseUrl()}/api/user/${role}`,{headers});
   }
 
   createUser(user: any, role: string): Observable<any> {
     const headers = new HttpHeaders({
-      'Authorization': this.token
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     });
     return this.http.post<any>(`${this.appConfigService.getBaseUrl()}/api/auth/create/${role}`, user, { headers })
       .pipe(

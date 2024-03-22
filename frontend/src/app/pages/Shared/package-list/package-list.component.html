@@ -113,11 +113,18 @@ Select colis
                   <mat-option *ngFor="let coursier of coursiers"  [value]="coursier.id">{{coursier.username}}</mat-option>
                 </mat-select>
               </mat-form-field>
-              <div  class="flex justify-end">
-                <button (click)="sendToStock()" class=" flex bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
-                  <mat-icon class="d-flex align-items-center">
-                    <i-tabler name="building-warehouse" class="icon-16 d-flex"></i-tabler>
-                    </mat-icon>Send</button>
+              <mat-form-field *ngIf="selectedChoice ==3" appearance="outline" class="mt-3 ">
+                <mat-select  [(ngModel)]="selectedDepot"  >
+                  <mat-option *ngFor="let depot of depots"  [value]="depot.depot_id">{{depot.depot_name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div *ngIf="selectedChoice == 5" class="flex justify-end">
+                <button (click)="sendfromStock('delivery')" class=" flex bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
+                  Send</button>
+              </div>
+              <div *ngIf="selectedChoice == 3" class="flex justify-end">
+                <button (click)="sendfromStock('transit')" class=" flex bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
+                  Send</button>
               </div>
             </div>
 
