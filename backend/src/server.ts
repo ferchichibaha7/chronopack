@@ -92,22 +92,26 @@ async function createRolesAndAdminIfNotExist(): Promise<void> {
 
 async function createDepotsIfNotExist(): Promise<void> {
   const depotsToCreate = [
-    { depot_name: 'Tunis',location:'Tunis' },
-   
+    { depot_name: 'Tunis', location: 'Tunis', contact_info: null },
+    { depot_name: 'Sfax', location: 'Sfax', contact_info: null },
+    { depot_name: 'Sousse', location: 'Sousse', contact_info: null },
+    { depot_name: 'Mednine', location: 'Mednine', contact_info: null },
+    { depot_name: 'Gafsa', location: 'Gafsa', contact_info: null }
   ];
 
   try {
-    for (const DepotData of depotsToCreate) {
-      const existingDepot = await Depot.findOne({ where: { depot_name: DepotData.depot_name } as any });
+    for (const depotData of depotsToCreate) {
+      const existingDepot = await Depot.findOne({ where: { depot_name: depotData.depot_name } as any });
       if (!existingDepot) {
-        await Depot.create(DepotData);
-        console.log(`Depot '${DepotData.depot_name}' created.`);
+        await Depot.create(depotData);
+        console.log(`Depot '${depotData.depot_name}' created.`);
       }
     }
   } catch (error) {
     console.error('Error creating depots:', error);
   }
 }
+
 
 
 async function createStatesIfNotExist(): Promise<void> {

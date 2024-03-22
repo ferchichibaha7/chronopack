@@ -6,7 +6,6 @@ export default function(roleNames: string[]) {
     try {
       // Get the current user from the request object
       const currentUser = req['currentUser'] as User;
-
       // Check if the user has one of the required roles      
       if (currentUser && currentUser.role && roleNames.includes(currentUser.role.role_name)) {
         // User is authorized to access the route
