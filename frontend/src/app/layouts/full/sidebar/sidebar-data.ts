@@ -74,24 +74,33 @@ export const navItems: NavItem[] = [
   {
     displayName: 'Stock',
     iconName: 'building-warehouse',
+    state:'En stock',
+    count:true,
     route: '/stock',
     roles:['Manager','Magasinier']
   },
   {
     displayName: 'En attente',
+    state:'En attente de ramassage',
+    count:true,
     iconName: 'clock-hour-5',
     route: '/en-attente',
+
     roles:['Manager','Magasinier']
   },
   {
     displayName: 'Pickup',
     iconName: 'package-import',
+    state:'Pickup',
+    count:true,
     route: '/pickup',
     roles:['Manager','Magasinier']
   },
   {
     displayName: 'Transit',
     iconName: 'truck-delivery',
+    state:'En transit',
+    count:true,
     route: '/transit',
     roles:['Manager','Magasinier']
   },

@@ -120,6 +120,78 @@ export class packageController {
     }
   };
 
+  public getPackagesByStateCount = async (...params) => {
+    const [req, res, next] = params;
+    try {
+      let packageCounts = {};
+      const statusName = req.query.statusName ? req.query.statusName : null;
+      const baseQuery: any = {
+        all: true,
+        nested: true,
+        attributes: { exclude: ["password"] }, // Exclude password attribute
+      };
+      // Fetch all packages with their associated statuses
+      let packages;
+      if (req["currentUser"].role_id === 1) {
+        // Admin
+        packages = await Package.findAll({ include: [{ model: Status }] });
+      } else if (req["currentUser"].role_id === 5) {
+        // Fournisseur
+        packages = await Package.findAll({
+          where: { sender_id: req["currentUser"].id },
+          include: [{ model: Status }],
+        });
+      } else if (
+        req["currentUser"].role_id === 2 ||
+        req["currentUser"].role_id === 3
+      ) {
+        const depotCondition = {
+          [Op.or]: [
+            { depot_id: req["currentUser"].depot_id }, // Depot ID matches current user's depot_id
+            { '$packageHistory.depot_id$': req["currentUser"].depot_id }, // Package history depot ID matches current user's depot_id
+          ],
+        };
+  
+        packages = await Package.findAll({
+          where: {
+            ...(statusName && { '$status.statusName$': statusName }), // Conditionally add statusName filter
+            ...depotCondition, // Include the depot condition
+          } as any,
+          include: [
+            {
+              model: Status,
+              where: statusName ? { statusName: statusName } : {}, // Conditionally add statusName filter
+            },
+            baseQuery,
+          ],
+        });
+      } else if (req["currentUser"].role_id === 4) {
+        // Coursier
+        packages = await PackageStateHistory.findAll({
+          where: { coursier_id: req["currentUser"].id },
+          include: [{ model: Package, include: [{ model: Status }] }],
+        });
+      }
+  
+      // Count packages for each state
+      packages.forEach((pkg) => {
+        const statusName = pkg.status?.statusName;
+        if (statusName) {
+          packageCounts[statusName] = packageCounts[statusName] ? packageCounts[statusName] + 1 : 1;
+        }
+      });
+  
+      // Return the package counts for each state
+      res.status(200).json(packageCounts);
+    } catch (error) {
+      console.error("Error fetching package counts by state:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+
+    
+  };
+  
+
   public getAllPackagesWithHistory = async (...params) => {
     const [req, res, next] = params;
     try {
@@ -162,10 +234,17 @@ export class packageController {
       ) {
         // Magasinier or Manager
         // Return packages where depot_id matches the current user's depot_id
+
+        const depotCondition = {
+          [Op.or]: [
+            { depot_id: req["currentUser"].depot_id }, // Depot ID matches current user's depot_id
+            { "$packageHistory.depot_id$": req["currentUser"].depot_id }, // Package history depot ID matches current user's depot_id
+          ],
+        };
         packages = await Package.findAll({
           where: {
-            depot_id: req["currentUser"].depot_id,
             ...(statusName && { "$status.statusName$": statusName }), // Conditionally add statusName filter
+          ...depotCondition, // Include the depot condition
           } as any,
           include: [
             {

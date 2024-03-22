@@ -14,4 +14,6 @@ export interface NavItem {
     ddType?: string;
     roles?:string[];
     isExpanded?:boolean
+    count?:boolean
+    state?:string
 }

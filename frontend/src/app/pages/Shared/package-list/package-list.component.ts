@@ -15,6 +15,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { NgxBarcode6Module } from 'ngx-barcode6';
 import { UserService } from '../../admin/users/user.service';
 import { DepotService } from 'src/app/services/depot.service';
+import { CountUpdateService } from 'src/app/services/count-update.service';
 
 @Component({
   selector: 'app-package-list',
@@ -46,7 +47,7 @@ export class PackageListComponent implements OnInit {
   dataSource = new MatTableDataSource<any>(); // Use 'any' type here
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private DepotService : DepotService, private userService:UserService, private router: Router,private cdr: ChangeDetectorRef,private fb: FormBuilder, private http: HttpClient, private packageService:PackageService,private _dialogsService: CoolDialogService,private snackBar: MatSnackBar){
+  constructor(private countUpdateService: CountUpdateService,private DepotService : DepotService, private userService:UserService, private router: Router,private cdr: ChangeDetectorRef,private fb: FormBuilder, private http: HttpClient, private packageService:PackageService,private _dialogsService: CoolDialogService,private snackBar: MatSnackBar){
   }
   ngOnInit(): void {
     this.getPackages()
@@ -99,6 +100,11 @@ deselectPackage(pack: any) {
   if (index !== -1) {
     this.selectedRows.splice(index, 1); // Retirer le package de selectedRows
   }
+}
+
+// Call this method whenever the relevant change occurs
+triggerCountUpdate() {
+  this.countUpdateService.emitCountUpdate();
 }
   showSnackBar(message: string, color: string): void {
     this.snackBar.open(message, 'Fermer', {
@@ -228,7 +234,7 @@ deselectPackage(pack: any) {
 
 
   updatePackageState(package_id : any,state : any) {
-    console.log(state);
+
 
     this.packageService.updatePackageStates([package_id],state)
     .subscribe(
@@ -236,7 +242,7 @@ deselectPackage(pack: any) {
         this.getPackages()
         this.showCreate = false
         this.showSnackBar('Le statut du colis a été mis à jour avec succès.', 'green');
-
+        this.triggerCountUpdate()
         // Optionally, perform any other actions after updating the package state
       },
       (error: any) => {
@@ -271,6 +277,7 @@ deselectPackage(pack: any) {
         this.getPackages()
         this.selectedRows = []
         this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
+        this.triggerCountUpdate()
 
         // Optionally, perform any other actions after updating the package state
       },
@@ -324,6 +331,7 @@ deselectPackage(pack: any) {
             this.getPackages()
             this.selectedRows = []
             this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
+            this.triggerCountUpdate()
 
             // Optionally, perform any other actions after updating the package state
           },
@@ -344,6 +352,7 @@ deselectPackage(pack: any) {
             this.getPackages()
             this.selectedRows = []
             this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
+            this.triggerCountUpdate()
 
             // Optionally, perform any other actions after updating the package state
           },

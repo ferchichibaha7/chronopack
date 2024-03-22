@@ -13,12 +13,19 @@
   class="menu-list-item  my-8"
   *ngIf="!item.navCap"
 >
+
   <i-tabler
     class="routeIcon"
     name="{{ item.iconName }}"
     matListItemIcon
   ></i-tabler>
-  <span class="hide-menu">{{ item.displayName }}</span>
+
+  <span class="hide-menu">
+    <span>  <div  *ngIf="item.count && count[item.state]" class="absolute inline-flex items-center justify-center w-6 h-6 text-xs bg-green-100 text-green-800    rounded-full top-3 end-5 ">{{count[item.state]}}</div>
+    </span>
+    {{ item.displayName }}
+
+  </span>
  <!-- Move the expand icon to the right -->
  <span class="text-xs" *ngIf="item.isExpanded &&  item.children && item.children.length > 0">
   <i-tabler  class=" small" name="chevron-up"></i-tabler>

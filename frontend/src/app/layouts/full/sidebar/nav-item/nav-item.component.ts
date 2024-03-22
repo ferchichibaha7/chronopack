@@ -3,6 +3,9 @@ import { NavItem } from './nav-item';
 import { Router } from '@angular/router';
 import { NavService } from '../../../../services/nav.service';
 import { navItems } from '../sidebar-data';
+import { PackageService } from 'src/app/services/packages.service';
+import { interval } from 'rxjs';
+import { CountUpdateService } from 'src/app/services/count-update.service';
 
 @Component({
   selector: 'app-nav-item',
@@ -13,18 +16,37 @@ export class AppNavItemComponent implements OnChanges {
   @Input() item: NavItem | any;
   @Input() depth: any;
   expandedParent: NavItem | null = null; // Track the currently expanded parent
-  constructor(public navService: NavService, public router: Router) {
+  count : any = []
+  constructor( private countUpdateService: CountUpdateService,public navService: NavService, public router: Router,private packageservice : PackageService) {
     if (this.depth === undefined) {
       this.depth = 0;
     }
+    this.countUpdateService.countUpdated.subscribe(() => {
+      this.getcount();
+    });
+
+        // Set up an interval to call getcount every 1 minute (60000 milliseconds)
+        interval(10000).subscribe(() => {
+          this.getcount();
+        });
+  }
+
+  getcount(){
+    this.packageservice.getAllPackagesCount().subscribe((result:any)=>{
+      console.log(result);
+      this.count = result
+    })
   }
 
   ngOnChanges() {
     this.navService.currentUrl.subscribe((url: string) => {
+      this.getcount();
       if (this.item.route && url) {
       }
     });
   }
+
+
 
   onItemSelected(item: NavItem) {
     if (!item.children || !item.children.length) {

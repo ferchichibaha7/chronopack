@@ -93,7 +93,7 @@ Select colis
 
 
             </div>
-            <div *ngIf="status == 'Pickup'"  class="flex justify-end mb-8">
+            <div *ngIf="status == 'Pickup' ||status == 'En transit' "  class="flex justify-end mb-8">
               <button (click)="sendToStock()" class=" flex bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
                 <mat-icon class="d-flex align-items-center">
                   <i-tabler name="building-warehouse" class="icon-16 d-flex"></i-tabler>
@@ -271,9 +271,11 @@ Select colis
                 </ng-template>
                 <ng-template [ngIf]=" row.status.id  == 3 ">
                   <div
-                    class="bg-purple-100 text-purple-800 rounded f-w-600 p-6 p-y-4 f-s-12 text-center"
+                    class="bg-purple-100 text-purple-800 rounded f-w-600 p-6 p-y-4 f-s-12 text-center flex flex-row justify-center items-center gap-4"
                   >
-                  {{row.status.statusName | titlecase}}
+                  <mat-icon
+                  ><i-tabler name="circle-chevron-left" class="icon-24 d-flex text-green-500"></i-tabler></mat-icon>
+                      <div>{{row.status.statusName | titlecase}}</div>
 
                 </div>
                 </ng-template>
