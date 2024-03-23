@@ -16,6 +16,7 @@ import { NgxBarcode6Module } from 'ngx-barcode6';
 import { UserService } from '../../admin/users/user.service';
 import { DepotService } from 'src/app/services/depot.service';
 import { CountUpdateService } from 'src/app/services/count-update.service';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-package-list',
@@ -44,19 +45,27 @@ export class PackageListComponent implements OnInit {
   selectedChoice: number = 5; // Default value is "Livré"
   selectedDelivery:any
   selectedDepot:any
+  currentuser : any
   dataSource = new MatTableDataSource<any>(); // Use 'any' type here
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private countUpdateService: CountUpdateService,private DepotService : DepotService, private userService:UserService, private router: Router,private cdr: ChangeDetectorRef,private fb: FormBuilder, private http: HttpClient, private packageService:PackageService,private _dialogsService: CoolDialogService,private snackBar: MatSnackBar){
+  constructor(private authservice : AuthService,private countUpdateService: CountUpdateService,private DepotService : DepotService, private userService:UserService, private router: Router,private cdr: ChangeDetectorRef,private fb: FormBuilder, private http: HttpClient, private packageService:PackageService,private _dialogsService: CoolDialogService,private snackBar: MatSnackBar){
   }
   ngOnInit(): void {
     this.getPackages()
+    this.getcurrentUser()
     if(this.status == 'En stock' && this.from == 'depot'){
       this.loadUsers('coursier')
       this.loadDepots()
     }
 
     this.statusOptions = this.packageService.getAllStatusOptions()
+  }
+
+  getcurrentUser(){
+    this.authservice.getUserData().subscribe(user=>{
+      this.currentuser = user
+    })
   }
 
  // Host listener for keydown events on the document

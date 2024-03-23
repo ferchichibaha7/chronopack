@@ -6,6 +6,7 @@ import { Op } from "sequelize";
 import { Package } from "../models/Package";
 import { PackageStateHistory } from "../models/PackageStateHistory";
 import { Status } from "../models/Status";
+import { Sequelize } from "sequelize-typescript";
 export class packageController {
   constructor() {}
 
@@ -86,10 +87,14 @@ export class packageController {
         req["currentUser"].role_id === 2 ||
         req["currentUser"].role_id === 3
       ) {
+
+
         // Magasinier or Manager
         // Return packages where depot_id matches the current user's depot_id
         queryCondition = {
-          depot_id: req["currentUser"].depot_id,
+          [Op.or]: [
+           // { depot_id: req["currentUser"].depot_id }, // Depot ID matches current user's depot_id
+          ],
         };
       }
 
@@ -97,8 +102,8 @@ export class packageController {
       const foundPackage = await Package.findOne({
         ...baseQuery,
         where: {
-          package_id: packageId,
-          ...queryCondition,
+          package_id: packageId
+       
         },
       });
 
@@ -145,10 +150,12 @@ export class packageController {
         req["currentUser"].role_id === 2 ||
         req["currentUser"].role_id === 3
       ) {
+        const packageIdQuery = `SELECT depot_id FROM PackageStateHistories WHERE package_id = Package.package_id ORDER BY createdAt DESC LIMIT 1`;
+
         const depotCondition = {
           [Op.or]: [
             { depot_id: req["currentUser"].depot_id }, // Depot ID matches current user's depot_id
-            { '$packageHistory.depot_id$': req["currentUser"].depot_id }, // Package history depot ID matches current user's depot_id
+            Sequelize.literal(`(${packageIdQuery}) = ${req["currentUser"].depot_id}`), // Package history depot ID matches current user's depot_id
           ],
         };
   
@@ -235,12 +242,14 @@ export class packageController {
         // Magasinier or Manager
         // Return packages where depot_id matches the current user's depot_id
 
-        const depotCondition = {
-          [Op.or]: [
-            { depot_id: req["currentUser"].depot_id }, // Depot ID matches current user's depot_id
-            { "$packageHistory.depot_id$": req["currentUser"].depot_id }, // Package history depot ID matches current user's depot_id
-          ],
-        };
+        const packageIdQuery = `SELECT depot_id FROM PackageStateHistories WHERE package_id = Package.package_id ORDER BY createdAt DESC LIMIT 1`;
+
+      const depotCondition = {
+        [Op.or]: [
+          { depot_id: req["currentUser"].depot_id }, // Depot ID matches current user's depot_id
+          Sequelize.literal(`(${packageIdQuery}) = ${req["currentUser"].depot_id}`), // Package history depot ID matches current user's depot_id
+        ],
+      };
         packages = await Package.findAll({
           where: {
             ...(statusName && { "$status.statusName$": statusName }), // Conditionally add statusName filter
@@ -299,6 +308,10 @@ export class packageController {
   
         // Update the package's state
         updatedPackage.status_id = newStateId;
+        if(newStateId == 4){
+          updatedPackage.depot_id = currentUser.depot_id;
+
+        }
   
         // Save the changes to the database
         await updatedPackage.save();
@@ -329,7 +342,7 @@ export class packageController {
           const depotId = currentUser.depot_id;
           packageStateHistoryData['depot_id'] = depotId;
         }
-  
+       
         // Create a new package history entry
         await PackageStateHistory.create(packageStateHistoryData);
       }

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { NavService } from '../../../../services/nav.service';
 import { navItems } from '../sidebar-data';
 import { PackageService } from 'src/app/services/packages.service';
-import { interval } from 'rxjs';
+import { interval, take } from 'rxjs';
 import { CountUpdateService } from 'src/app/services/count-update.service';
 
 @Component({
@@ -26,20 +26,19 @@ export class AppNavItemComponent implements OnChanges {
     });
 
         // Set up an interval to call getcount every 1 minute (60000 milliseconds)
-        interval(10000).subscribe(() => {
+        interval(60000).subscribe(() => {
           this.getcount();
         });
   }
 
   getcount(){
     this.packageservice.getAllPackagesCount().subscribe((result:any)=>{
-      console.log(result);
       this.count = result
     })
   }
 
   ngOnChanges() {
-    this.navService.currentUrl.subscribe((url: string) => {
+    this.navService.currentUrl.pipe(take(1)).subscribe((url: string) => {
       this.getcount();
       if (this.item.route && url) {
       }
