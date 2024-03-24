@@ -15,6 +15,7 @@ import { TrackingComponent } from './pages/tracking/tracking.component';
 import { AllpackagesComponent } from './pages/Manager/allpackages/allpackages.component';
 import { TransitComponent } from './pages/Manager/transit/transit.component';
 import { InDeliveryComponent } from './pages/Manager/in-delivery/in-delivery.component';
+import { RetourneComponent } from './pages/Manager/retourne/retourne.component';
 
 const routes: Routes = [
   {
@@ -61,7 +62,7 @@ const routes: Routes = [
         path: 'allpackages',
         canActivate: [RoleGuard],
         data: {
-          expectedRoles: ['Manager', 'Magasinier'], // Specify the expected roles for this route
+          expectedRoles: ['Manager', 'Magasinier','Coursier'], // Specify the expected roles for this route
         },
         component: AllpackagesComponent,
       },
@@ -101,9 +102,17 @@ const routes: Routes = [
         path: 'indelivery',
         canActivate: [RoleGuard],
         data: {
-          expectedRoles: ['Manager', 'Magasinier'], // Specify the expected roles for this route
+          expectedRoles: ['Manager', 'Magasinier','Coursier'], // Specify the expected roles for this route
         },
         component: InDeliveryComponent,
+      },
+      {
+        path: 'retourne',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRoles: ['Manager', 'Magasinier'], // Specify the expected roles for this route
+        },
+        component: RetourneComponent,
       },
 
       {

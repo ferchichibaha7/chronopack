@@ -17,6 +17,7 @@ import { UserService } from '../../admin/users/user.service';
 import { DepotService } from 'src/app/services/depot.service';
 import { CountUpdateService } from 'src/app/services/count-update.service';
 import { AuthService } from 'src/app/auth/auth.service';
+import { ReasonsService } from 'src/app/services/reasons.service';
 
 @Component({
   selector: 'app-package-list',
@@ -31,6 +32,7 @@ export class PackageListComponent implements OnInit {
   statusOptions :any = []
   coursiers : any = []
   depots : any = []
+  reasons: any = []
   @Input() from : string =''
   @Input() displayedColumns: string[] = [];
   @Input() showSelect: boolean = false;
@@ -47,18 +49,37 @@ export class PackageListComponent implements OnInit {
   selectedChoice: number = 5; // Default value is "Livré"
   selectedDelivery:any
   selectedDepot:any
+  selectedReason:any
+
   currentuser : any
   dataSource = new MatTableDataSource<any>(); // Use 'any' type here
+  displayedColumns2: string[] = [
+    'description',
+    'sender',
+    'price',
+    'receiverName',
+    'receiverAddress',
+    'receiverContactInfo',
+    'date',
+    'action',
+  ];
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private authservice : AuthService,private countUpdateService: CountUpdateService,private DepotService : DepotService, private userService:UserService, private router: Router,private cdr: ChangeDetectorRef,private fb: FormBuilder, private http: HttpClient, private packageService:PackageService,private _dialogsService: CoolDialogService,private snackBar: MatSnackBar){
+  constructor(private authservice : AuthService,private reasonsService : ReasonsService, private countUpdateService: CountUpdateService,private DepotService : DepotService, private userService:UserService, private router: Router,private cdr: ChangeDetectorRef,private fb: FormBuilder, private http: HttpClient, private packageService:PackageService,private _dialogsService: CoolDialogService,private snackBar: MatSnackBar){
   }
   ngOnInit(): void {
+
     this.getPackages()
     this.getcurrentUser()
     if(this.status == 'En stock' && this.from == 'depot'){
       this.loadUsers('coursier')
       this.loadDepots()
+    }
+    if(this.status == 'En cours de livraison' && this.currentuser.role_id == 4){
+      console.log(this.reasons);
+
+      this.loadReasons()
+
     }
 
     this.statusOptions = this.packageService.getAllStatusOptions()
@@ -301,6 +322,27 @@ triggerCountUpdate() {
   }
 
   }
+  sendtoreturn(){
+    if(this.selectedRows.length>0){
+      let packageIds = this.selectedRows.map(pkg => pkg.package_id);
+      this.packageService.updatePackageStates(packageIds,7,this.currentuser.id,null,this.selectedReason)
+      .subscribe(
+        () => {
+          this.getPackages()
+          this.selectedRows = []
+          this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
+          this.triggerCountUpdate()
+
+          // Optionally, perform any other actions after updating the package state
+        },
+        (error: any) => {
+          console.error('Error updating package state:', error);
+          this.showSnackBar('Erreur lors de la mise à jour du statuts des colis.', 'red');
+          // Handle error appropriately
+        }
+      );
+    }
+  }
 
 
   loadUsers(role: any): void {
@@ -323,6 +365,23 @@ triggerCountUpdate() {
       (depots: any) => {
         this.depots = depots
         this.selectedDepot = this.depots.length > 0 ? this.depots[0].depot_id : null;
+
+      },
+      (error: any) => {
+        console.error('Error fetching depots:', error);
+      }
+    );
+  }
+
+  loadReasons(): void {
+
+    this.reasonsService.getAllreasons().subscribe(
+      (reasons: any) => {
+        console.log(reasons);
+
+        this.reasons = reasons
+        this.selectedReason = this.reasons.length > 0 ? this.reasons[0].reason_id : null;
+        console.log(reasons);
 
       },
       (error: any) => {

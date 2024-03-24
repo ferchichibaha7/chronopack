@@ -1,1 +1,1 @@
-<app-package-list [from]="'depot'"  [noedit]="true" [displayedColumns]="displayedColumns"  [status]="'En cours de livraison'"></app-package-list>
+<app-package-list [from]="'depot'" [showSelect]="showSelect" (toggleFormVisibility)="toggleFormVisibility($event)"  [noedit]="true" [displayedColumns]="displayedColumns"  [status]="'En cours de livraison'"></app-package-list>

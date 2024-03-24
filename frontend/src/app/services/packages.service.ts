@@ -48,7 +48,7 @@ export class PackageService {
     return this.http.post(`${this.appConfigService.getBaseUrl()}/api/pack/create`, packageData, { headers });
   }
 
-  updatePackageStates(packageIds: any[], newStateId: any,selectedDelivery?:any,depot_id?:any): Observable<any> {
+  updatePackageStates(packageIds: any[], newStateId: any,selectedDelivery?:any,depot_id?:any,reason_id?:any): Observable<any> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
     });
@@ -63,7 +63,9 @@ export class PackageService {
     if (depot_id){
       body['depot_id'] = depot_id
     }
-
+    if (reason_id){
+      body['reason_id'] = reason_id
+    }
     return this.http.put<any>(`${this.appConfigService.getBaseUrl()}/api/pack/states`, body, { headers });
   }
    // New method to fetch a package by its ID

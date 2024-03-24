@@ -6,7 +6,7 @@ import user from "./routes/api/user";
 import auth from "./routes/api/auth";
 import pack from "./routes/api/package";
 import depot from "./routes/api/depot";
-
+import reasons from "./routes/api/reasons"
 import bcrypt from "bcryptjs";
 
 import { Role } from "./models/Role";
@@ -41,7 +41,9 @@ app.get("/", (_req, res) => {
 app.use("/api/auth", auth);
 app.use("/api/user", user);
 app.use("/api/pack", pack); // Use the pack router
-app.use("/api/depot", depot); // Use the pack router
+app.use("/api/depot", depot); 
+app.use("/api/reasons", reasons); 
+
 
 const port = app.get("port");
 const server = app.listen(port, () =>

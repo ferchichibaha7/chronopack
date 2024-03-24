@@ -64,7 +64,7 @@ export const navItems: NavItem[] = [
     displayName: 'Tous les colis',
     iconName: 'package',
     route: '/allpackages',
-    roles:['Manager','Magasinier']
+    roles:['Manager','Magasinier','Coursier']
   },
   {
     displayName: 'Suivi colis',
@@ -111,6 +111,15 @@ export const navItems: NavItem[] = [
     count:true,
     twoLines:true,
     route: '/indelivery',
+    roles:['Manager','Magasinier','Coursier']
+  },
+  {
+    displayName: 'Retourné',
+    iconName: 'arrow-back',
+    state:'Retourné',
+    count:true,
+    twoLines:true,
+    route: '/retourne',
     roles:['Manager','Magasinier']
   },
 
