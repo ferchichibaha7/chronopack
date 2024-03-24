@@ -24,7 +24,7 @@ Select colis
               <mat-form-field class=" w-full mt-4 mr-4 "    appearance="outline">
                 <input  matInput type="text" placeholder="Package code" [(ngModel)]="barcodeInput">
                 </mat-form-field>
-              <button (click)="addBybarcode()" mat-raised-button class="mr-4 h-12 bg-blue-500 ">Ajouter</button>          </div>
+              <button (click)="addBybarcode()" mat-raised-button class="mr-4 h-12  mat-primary ">Ajouter</button>          </div>
 
           <!-- Second Row: Empty Box Image -->
           <div *ngIf="selectedRows.length == 0">
@@ -94,7 +94,7 @@ Select colis
 
             </div>
             <div *ngIf="status == 'Pickup' ||status == 'En transit' "  class="flex justify-end mb-8">
-              <button (click)="sendToStock()" class=" flex bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
+              <button mat-flat-button (click)="sendToStock()" class=" flex py-2 px-4 rounded-lg  mat-primary">
                 <mat-icon class="d-flex align-items-center">
                   <i-tabler name="building-warehouse" class="icon-16 d-flex"></i-tabler>
                   </mat-icon>Ajouter au stock</button>
@@ -119,11 +119,11 @@ Select colis
                 </mat-select>
               </mat-form-field>
               <div *ngIf="selectedChoice == 5" class="flex justify-end">
-                <button (click)="sendfromStock('delivery')" class=" flex bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
+                <button mat-flat-button (click)="sendfromStock('delivery')" class=" flex py-2 px-4 rounded-lg mat-primary">
                   Send</button>
               </div>
               <div *ngIf="selectedChoice == 3" class="flex justify-end">
-                <button (click)="sendfromStock('transit')" class=" flex bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
+                <button mat-flat-button (click)="sendfromStock('transit')" class=" flex  py-2 px-4 rounded-lg  mat-primary">
                   Send</button>
               </div>
             </div>
@@ -270,12 +270,12 @@ Select colis
                 </div>
                 </ng-template>
                 <ng-template [ngIf]=" row.status.id  == 3 ">
-                  <div
+                  <div matTooltipPosition="above"  [matTooltip]=" row['packageHistory'].slice(-1)[0].user.depot.depot_name+' -> '+row['packageHistory'].slice(-1)[0].depot.depot_name"
                     class="bg-purple-100 text-purple-800 rounded f-w-600 p-6 p-y-4 f-s-12  flex flex-row justify-start items-start"
                   >
-                 <i-tabler *ngIf="currentuser.depot_id != row.depot_id" name="circle-chevron-left" class="icon-24 d-flex text-green-500 mr-2"></i-tabler>
+                 <i-tabler  *ngIf="currentuser.depot_id != row.depot_id" name="circle-chevron-left" class="icon-24 d-flex text-green-500 mr-2"></i-tabler>
 
-                <i-tabler *ngIf="currentuser.depot_id == row.depot_id" name="circle-chevron-right" class="icon-24 d-flex text-red-500 mr-2"></i-tabler>
+                <i-tabler  *ngIf="currentuser.depot_id == row.depot_id" name="circle-chevron-right" class="icon-24 d-flex text-red-500 mr-2"></i-tabler>
                       <div>{{row.status.statusName | titlecase}} </div>
 
                 </div>
