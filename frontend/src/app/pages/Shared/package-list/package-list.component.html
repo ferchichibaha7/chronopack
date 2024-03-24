@@ -1,4 +1,4 @@
-<div *ngIf="from == 'depot' && status && status != 'En attente de ramassage'" class="flex justify-end mb-8"> <!-- Add flex utilities to align buttons to the right -->
+<div *ngIf="from == 'depot' && !noedit" class="flex justify-end mb-8"> <!-- Add flex utilities to align buttons to the right -->
   <button mat-raised-button
   [ngClass]="showSelect ? 'bg-warning text-white' : 'bg-primary text-white'"
   (click)="toggleShowSelect()">
@@ -351,6 +351,11 @@ Select colis
                 <button (click)="updatePackageStateFromButton(row,2,'depot')"  class="leading-normal" *ngIf="row.status.id == 10  && from == 'depot'" mat-raised-button>Annuler</button>
 
 
+            </ng-container>
+            <ng-container *ngIf="status =='En cours de livraison' "  matColumnDef="coursier">
+              <th mat-header-cell *matHeaderCellDef > Coursier </th>
+              <td mat-cell *matCellDef="let row">
+              {{row['packageHistory'].slice(-1)[0].coursier.username}}
             </ng-container>
 
             <ng-container matColumnDef="date">

@@ -34,6 +34,8 @@ export class PackageListComponent implements OnInit {
   @Input() from : string =''
   @Input() displayedColumns: string[] = [];
   @Input() showSelect: boolean = false;
+  @Input() noedit: boolean = false;
+
   @Output() toggleFormVisibility: EventEmitter<boolean> = new EventEmitter<boolean>();
   showCreate: boolean = false;
   selectedPackageId: number;

@@ -105,6 +105,16 @@ export const navItems: NavItem[] = [
     roles:['Manager','Magasinier']
   },
   {
+    displayName: 'En livraison',
+    iconName: 'car',
+    state:'En cours de livraison',
+    count:true,
+    twoLines:true,
+    route: '/indelivery',
+    roles:['Manager','Magasinier']
+  },
+
+  {
     displayName: 'Payement',
     iconName: 'chart-line',
     route: '/ui-components/menu',
