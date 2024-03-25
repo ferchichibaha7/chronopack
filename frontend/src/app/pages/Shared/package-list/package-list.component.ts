@@ -28,7 +28,7 @@ import { ReasonsService } from 'src/app/services/reasons.service';
 })
 export class PackageListComponent implements OnInit {
 
-  @Input() status: string; // Declare the input property
+  @Input() status: string =''; // Declare the input property
   statusOptions :any = []
   coursiers : any = []
   depots : any = []

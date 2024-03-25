@@ -7,6 +7,8 @@ import { MatSort } from '@angular/material/sort';
 import { UserService } from './user.service';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { DepotService } from 'src/app/services/depot.service';
+import { PackageService } from 'src/app/services/packages.service';
 
 export interface User {
   id: number;
@@ -26,17 +28,21 @@ export interface User {
 })
 export class UsersComponent implements OnInit {
   userForm: FormGroup;
+  depots : any = []
+
   showCreate= false
   users_loading = false
   role = '';
   dataSource: MatTableDataSource<User>;
-  displayedColumns: string[] = ['id', 'username', 'email', 'role'];
+  displayedColumns: string[] = ['id', 'username', 'email','depot', 'role'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private DepotService : DepotService,
+
   ) {
     this.userForm = this.fb.group({
       username: ['', Validators.required],
@@ -52,6 +58,23 @@ export class UsersComponent implements OnInit {
       this.role = params['role']; // Retrieve the role from the path parameter
       this.loadUsers(this.role); // Load users based on the specified role
     });
+    this.loadDepots()
+
+  }
+
+
+
+  loadDepots(): void {
+
+    this.DepotService.getAllDepots().subscribe(
+      (depots: any) => {
+        this.depots = depots
+
+      },
+      (error: any) => {
+        console.error('Error fetching depots:', error);
+      }
+    );
   }
 
   loadUsers(role: any): void {
@@ -80,6 +103,8 @@ export class UsersComponent implements OnInit {
   onSubmit(role: string) {
     if (this.userForm.valid) {
       const userData = this.userForm.value;
+      console.log(userData);
+
       this.userService.createUser(userData, role).subscribe(
         (response: any) => {
           // Clear the form after successful creation

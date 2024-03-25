@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ViewEncapsulation, ViewChild } from '@angular/core';
 import {
@@ -21,6 +21,8 @@ import {
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material.module';
 import { TablerIconsModule } from 'angular-tabler-icons';
+import { PackageService } from 'src/app/services/packages.service';
+import { take } from 'rxjs';
 
 interface month {
   value: string;
@@ -143,7 +145,7 @@ const ELEMENT_DATA: productsData[] = [
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss'],
 })
-export class AdminDashboardComponent {
+export class AdminDashboardComponent implements OnInit {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);
 
   public salesOverviewChart!: Partial<salesOverviewChart> | any;
@@ -234,7 +236,7 @@ export class AdminDashboardComponent {
     },
   ];
 
-  constructor() {
+  constructor(  private packageService : PackageService) {
     // sales overview chart
     this.salesOverviewChart = {
       series: [
@@ -242,6 +244,16 @@ export class AdminDashboardComponent {
           name: 'Eanings this month',
           data: [355, 390, 300, 350, 390, 180, 355, 390],
           color: '#5D87FF',
+        },
+        {
+          name: 'Expense this month',
+          data: [280, 250, 325, 215, 250, 310, 280, 250],
+          color: '#49BEFF',
+        },
+        {
+          name: 'Expense this month',
+          data: [280, 250, 325, 215, 250, 310, 280, 250],
+          color: '#49BEFF',
         },
         {
           name: 'Expense this month',
@@ -277,29 +289,29 @@ export class AdminDashboardComponent {
       xaxis: {
         type: 'category',
         categories: [
-          '16/08',
-          '17/08',
-          '18/08',
-          '19/08',
-          '20/08',
-          '21/08',
-          '22/08',
-          '23/08',
+
+
         ],
         labels: {
           style: { cssClass: 'grey--text lighten-2--text fill-color' },
+
         },
       },
       yaxis: {
         show: true,
         min: 0,
-        max: 400,
-        tickAmount: 4,
+
+        tickAmount: 1,
         labels: {
           style: {
             cssClass: 'grey--text lighten-2--text fill-color',
           },
+          formatter: function (value:any) {
+            return Math.round(value); // Round off to nearest integer
+          }
         },
+          forceNiceScale: true, // Display integer values on the y-axis
+
       },
       stroke: {
         show: true,
@@ -413,5 +425,37 @@ export class AdminDashboardComponent {
         },
       },
     };
+  }
+  ngOnInit(): void {
+    this.getchartdata()
+  }
+
+  getchartdata(){
+    this.packageService.getPackagesChart().pipe(take(1)).subscribe((data:any) => {
+      let xaxis = {
+        type: 'category',
+        categories: data.categories ,
+        labels: {
+          style: { cssClass: 'grey--text lighten-2--text fill-color' },
+
+        },
+      }
+      // Assuming the data returned from the service contains the necessary chart data
+      this.salesOverviewChart.xaxis= xaxis; // Update the series data
+
+      // Update the sales overview chart data
+      this.salesOverviewChart.series = data.series; // Update the series data
+
+      // Update the x-axis categories if needed
+
+      // Assuming categories are provided in the data
+
+      // Optionally, update other chart properties as needed
+
+      // Update the chart component
+      if (this.chart && this.chart.updateOptions) {
+        this.chart.updateOptions(this.salesOverviewChart);
+      }
+    });
   }
 }

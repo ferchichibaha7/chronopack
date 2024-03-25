@@ -1,4 +1,4 @@
-<div *ngIf="(from == 'depot' && !noedit && currentuser.role_id != 4) || (status == 'En cours de livraison' && currentuser.role_id == 4) " class="flex justify-end mb-8"> <!-- Add flex utilities to align buttons to the right -->
+<div *ngIf="(from == 'depot' && !noedit && currentuser.role_id != 4 && currentuser.role_id != 1) || (status == 'En cours de livraison' && currentuser.role_id == 4) " class="flex justify-end mb-8"> <!-- Add flex utilities to align buttons to the right -->
   <button mat-raised-button
   [ngClass]="showSelect ? 'bg-warning text-white' : 'bg-primary text-white'"
   (click)="toggleShowSelect()">
@@ -288,7 +288,7 @@ Select colis
                 </div>
                 </ng-template>
                 <ng-template [ngIf]=" row.status.id  == 3 ">
-                  <div matTooltipPosition="above"  [matTooltip]=" row['packageHistory'].slice(-1)[0].user.depot.depot_name+' -> '+row['packageHistory'].slice(-1)[0].depot.depot_name"
+                  <div matTooltipPosition="above"  [matTooltip]=" row['packageHistory'].slice(-1)[0].depot?  row['packageHistory'].slice(-1)[0].user.depot.depot_name+' -> '+row['packageHistory'].slice(-1)[0].depot.depot_name  : ''"
                     class="bg-purple-100 text-purple-800 rounded f-w-600 p-6 p-y-4 f-s-12  flex flex-row justify-start items-start"
                   >
                  <i-tabler  *ngIf="currentuser.depot_id != row.depot_id" name="circle-chevron-left" class="icon-24 d-flex text-green-500 mr-2"></i-tabler>

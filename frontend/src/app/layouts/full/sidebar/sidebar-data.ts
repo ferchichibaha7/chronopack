@@ -48,29 +48,32 @@ export const navItems: NavItem[] = [
     ]
   },
 
-  {
-    displayName: 'Paramètres',
-    iconName: 'settings',
-    route: '/settings',
-    roles:['Administrateur']
-  },
+
   {
     displayName: 'Mes Colis',
     iconName: 'package',
     route: '/packages',
     roles:['Fournisseur']
   },
+
   {
     displayName: 'Tous les colis',
     iconName: 'package',
     route: '/allpackages',
-    roles:['Manager','Magasinier','Coursier']
+    roles:['Administrateur','Manager','Magasinier','Coursier']
   },
   {
     displayName: 'Suivi colis',
     iconName: 'scan-eye',
     route: '/tracking',
   },
+  {
+    displayName: 'Paramètres',
+    iconName: 'settings',
+    route: '/settings',
+    roles:['Administrateur']
+  },
+
   {
     displayName: 'Stock',
     iconName: 'building-warehouse',

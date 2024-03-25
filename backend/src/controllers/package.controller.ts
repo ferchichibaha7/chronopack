@@ -236,7 +236,9 @@ export class packageController {
       if (req["currentUser"].role_id === 1) {
         // Admin
         // Return all packages
-        packages = await Package.findAll(baseQuery);
+        packages = await Package.findAll({
+          include: [ baseQuery],
+        });
       } else if (req["currentUser"].role_id === 5) {
         // Fournisseur
         // Return packages where sender_id is the current user's id
@@ -270,6 +272,7 @@ export class packageController {
       };
         packages = await Package.findAll({
           where: {
+            "$status.statusName$": { [Op.not]: 'Brouillon' }, // Exclude packages with statusName 'Brouillon'
             ...(statusName && { "$status.statusName$": statusName }), // Conditionally add statusName filter
           ...depotCondition, // Include the depot condition
           } as any,
@@ -393,5 +396,92 @@ export class packageController {
       res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
     }
   }
+
+
+
+  public getPackageStatusChartDataa = async (...params) => {
+    const [req, res, next] = params;
+  
+    try {
+      // Fetch the count of packages for each status and date
+      const packageCounts = await Package.findAll({
+        attributes: [
+          [Sequelize.fn('DATE', Sequelize.col('Package.createdAt')), 'day'],
+          [Sequelize.fn('COUNT', Sequelize.col('*')), 'packageCount'],
+          [Sequelize.col('status.id'), 'status.id'],
+          [Sequelize.col('status.statusName'), 'statusName'], // Include statusName directly in the attributes
+        ],
+        include: [{ model: Status, attributes: [] }],
+        group: [
+          Sequelize.fn('DATE', Sequelize.col('Package.createdAt')),
+          Sequelize.col('status.id'),
+          Sequelize.col('status.statusName'),
+        ],
+      });
+  
+      // Process the fetched data to format it for the chart
+      const chartData = {
+        series: [],
+        categories: [],
+        statusNames: [], // Include statusNames array to store unique status names
+        statusColors: {}, // Include statusColors object to store status colors
+      };
+  
+      // Populate categories (dates) in the chartData
+      packageCounts.forEach((item: any) => {
+        const day = item.getDataValue('day'); // Assuming day is already a string in 'YYYY-MM-DD' format
+        if (day && !chartData.categories.includes(day)) {
+          chartData.categories.push(day);
+        }
+      });
+  
+      // Extract unique status names and populate statusNames array
+      const uniqueStatusNames = Array.from(new Set(packageCounts.map((item: any) => item.getDataValue('statusName'))));
+      chartData.statusNames = uniqueStatusNames;
+  
+      // Define status colors based on status names
+      const statusColorMap = {
+        'Brouillon': '#FFC107',  // Yellow color for status "Brouillon"
+        'En attente de ramassage': '#FFBA43',  // Orange color for status "En attente de ramassage"
+        'En transit': '#6B21A8',  // Green color for status "En transit"
+        'En stock': '#2196F3',  // Blue color for status "En stock"
+        'En cours de livraison': '#9C27B0',  // Purple color for status "En cours de livraison"
+        'Livré': '#4CAF50',  // Green color for status "Livré"
+        'Retourné': '#F44336',  // Red color for status "Retourné"
+        'Livré et payé': '#4CAF50',  // Green color for status "Livré et payé"
+        'Annulé': '#F44336',  // Red color for status "Annulé"
+        'Pickup': '#2196F3',  // Blue color for status "Pickup"
+      };
+  
+      // Populate series data for each status
+      uniqueStatusNames.forEach((statusName: string) => {
+        const statusSeries = {
+          name: statusName,
+          data: new Array(chartData.categories.length).fill(0), // Initialize data array with zeros
+          color: statusColorMap[statusName] || '#000000', // Default color if status name is not found in the map
+        };
+        packageCounts.forEach((item: any) => {
+          const day = item.getDataValue('day');
+          const packageCount = item.getDataValue('packageCount');
+          if (day && item.getDataValue('statusName') === statusName) {
+            const index = chartData.categories.indexOf(day);
+            if (index !== -1) {
+              statusSeries.data[index] = packageCount;
+            }
+          }
+        });
+        chartData.series.push(statusSeries);
+      });
+  
+      // Return the formatted chart data
+      res.status(200).json(chartData);
+    } catch (error) {
+      console.error("Error fetching package status chart data:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+  
+  
+  
   
 }

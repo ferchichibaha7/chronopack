@@ -13,6 +13,7 @@ const ctrl = new packageController();
 // Get all packages with history
 router.get("/", auth, (...params) => ctrl.getAllPackagesWithHistory(...params));
 router.get("/count", auth, (...params) => ctrl.getPackagesByStateCount(...params));
+router.get("/chart", auth, (...params) => ctrl.getPackageStatusChartDataa(...params));
 
 
 // Create a new package

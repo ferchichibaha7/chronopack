@@ -64,7 +64,7 @@ const routes: Routes = [
         path: 'allpackages',
         canActivate: [RoleGuard],
         data: {
-          expectedRoles: ['Manager', 'Magasinier','Coursier'], // Specify the expected roles for this route
+          expectedRoles: ['Manager', 'Magasinier','Coursier', 'Administrateur'], // Specify the expected roles for this route
         },
         component: AllpackagesComponent,
       },

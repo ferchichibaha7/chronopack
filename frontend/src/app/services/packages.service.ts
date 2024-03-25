@@ -41,6 +41,19 @@ export class PackageService {
     return this.http.get(`${this.appConfigService.getBaseUrl()}/api/pack/count`, { headers,params });
   }
 
+  getPackagesChart() {
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    });
+
+     // Create an empty params object
+     let params = new HttpParams();
+
+
+    return this.http.get(`${this.appConfigService.getBaseUrl()}/api/pack/chart`, { headers,params });
+  }
+
   createPackage(packageData: any): Observable<any> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
