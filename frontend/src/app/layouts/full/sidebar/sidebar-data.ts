@@ -114,6 +114,24 @@ export const navItems: NavItem[] = [
     roles:['Manager','Magasinier','Coursier']
   },
   {
+    displayName: 'Livré',
+    iconName: 'package',
+    state:'Livré',
+    count:true,
+    twoLines:true,
+    route: '/delivered',
+    roles:['Manager','Magasinier','Coursier']
+  },
+  {
+    displayName: 'Livré et payé',
+    iconName: 'package',
+    state:'Livré et payé',
+    count:true,
+    twoLines:true,
+    route: '/delivered-payed',
+    roles:['Manager','Magasinier','Coursier']
+  },
+  {
     displayName: 'Retourné',
     iconName: 'arrow-back',
     state:'Retourné',

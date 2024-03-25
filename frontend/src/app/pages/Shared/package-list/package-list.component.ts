@@ -47,6 +47,7 @@ export class PackageListComponent implements OnInit {
   barcodeInput : any = ''
   selectedRows: any[] = [];
   selectedChoice: number = 5; // Default value is "Livré"
+  selectedChoiceLivreur = 6
   selectedDelivery:any
   selectedDepot:any
   selectedReason:any
@@ -207,7 +208,6 @@ triggerCountUpdate() {
             return dateB -dateA   ; // Sort in descending order (latest first)
 
           });
-          console.log(packages);
 
           this.dataSource = new MatTableDataSource(packages);
           this.dataSource.paginator = this.paginator;
@@ -310,7 +310,6 @@ triggerCountUpdate() {
         this.selectedRows = []
         this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
         this.triggerCountUpdate()
-
         // Optionally, perform any other actions after updating the package state
       },
       (error: any) => {
@@ -344,6 +343,48 @@ triggerCountUpdate() {
     }
   }
 
+  sendtodelivered(){
+    if(this.selectedRows.length>0){
+      let packageIds = this.selectedRows.map(pkg => pkg.package_id);
+      this.packageService.updatePackageStates(packageIds,6,this.currentuser.id,null,null)
+      .subscribe(
+        () => {
+          this.getPackages()
+          this.selectedRows = []
+          this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
+          this.triggerCountUpdate()
+
+          // Optionally, perform any other actions after updating the package state
+        },
+        (error: any) => {
+          console.error('Error updating package state:', error);
+          this.showSnackBar('Erreur lors de la mise à jour du statuts des colis.', 'red');
+          // Handle error appropriately
+        }
+      );
+    }
+  }
+  senttopayed(){
+    if(this.selectedRows.length>0){
+      let packageIds = this.selectedRows.map(pkg => pkg.package_id);
+      this.packageService.updatePackageStates(packageIds,8,this.currentuser.id,null,null)
+      .subscribe(
+        () => {
+          this.getPackages()
+          this.selectedRows = []
+          this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
+          this.triggerCountUpdate()
+
+          // Optionally, perform any other actions after updating the package state
+        },
+        (error: any) => {
+          console.error('Error updating package state:', error);
+          this.showSnackBar('Erreur lors de la mise à jour du statuts des colis.', 'red');
+          // Handle error appropriately
+        }
+      );
+    }
+  }
 
   loadUsers(role: any): void {
 

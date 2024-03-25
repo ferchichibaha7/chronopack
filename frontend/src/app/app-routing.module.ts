@@ -16,6 +16,8 @@ import { AllpackagesComponent } from './pages/Manager/allpackages/allpackages.co
 import { TransitComponent } from './pages/Manager/transit/transit.component';
 import { InDeliveryComponent } from './pages/Manager/in-delivery/in-delivery.component';
 import { RetourneComponent } from './pages/Manager/retourne/retourne.component';
+import { DeliveredComponent } from './pages/Manager/delivered/delivered.component';
+import { DeliveredPayedComponent } from './pages/Manager/delivered-payed/delivered-payed.component';
 
 const routes: Routes = [
   {
@@ -105,6 +107,22 @@ const routes: Routes = [
           expectedRoles: ['Manager', 'Magasinier','Coursier'], // Specify the expected roles for this route
         },
         component: InDeliveryComponent,
+      },
+      {
+        path: 'delivered',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRoles: ['Manager', 'Magasinier','Coursier'], // Specify the expected roles for this route
+        },
+        component: DeliveredComponent,
+      },
+      {
+        path: 'delivered-payed',
+        canActivate: [RoleGuard],
+        data: {
+          expectedRoles: ['Manager', 'Magasinier','Coursier'], // Specify the expected roles for this route
+        },
+        component: DeliveredPayedComponent,
       },
       {
         path: 'retourne',

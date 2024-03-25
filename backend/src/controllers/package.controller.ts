@@ -174,9 +174,27 @@ export class packageController {
         });
       } else if (req["currentUser"].role_id === 4) {
         // Coursier
-        packages = await PackageStateHistory.findAll({
-          where: { coursier_id: req["currentUser"].id },
-          include: [{ model: Package, include: [{ model: Status }] }],
+      
+        const packageIdQuery = `SELECT coursier_id FROM PackageStateHistories WHERE package_id = Package.package_id ORDER BY createdAt DESC LIMIT 1`;
+        
+      const depotCondition = {
+        [Op.and]: [
+          { depot_id: req["currentUser"].depot_id }, // Depot ID matches current user's depot_id
+          Sequelize.literal(`(${packageIdQuery}) = ${req["currentUser"].id}`), // Package history depot ID matches current user's depot_id
+        ],
+      };
+        packages = await Package.findAll({
+          where: {
+            ...(statusName && { "$status.statusName$": statusName }), // Conditionally add statusName filter
+          ...depotCondition, // Include the depot condition
+          } as any,
+          include: [
+            {
+              model: Status,
+              where: statusName ? { statusName: statusName } : {}, // Conditionally add statusName filter
+            },
+            baseQuery,
+          ],
         });
       }
   
@@ -213,7 +231,6 @@ export class packageController {
 
       // Check if statusName is passed in the query params
       const statusName = req.query.statusName ? req.query.statusName : null;
-      console.log(statusName);
       
       // Check the role of the current user and customize the query accordingly
       if (req["currentUser"].role_id === 1) {
@@ -267,7 +284,6 @@ export class packageController {
       } else if (req["currentUser"].role_id === 4) {
     
         const packageIdQuery = `SELECT coursier_id FROM PackageStateHistories WHERE package_id = Package.package_id ORDER BY createdAt DESC LIMIT 1`;
-        console.log(packageIdQuery);
         
       const depotCondition = {
         [Op.and]: [
@@ -345,8 +361,12 @@ export class packageController {
           packageStateHistoryData['coursier_id'] = coursier_id;
 
         }
+        if (currentUser.role_id == 4 && (newStateId == 6)) {
+          packageStateHistoryData['coursier_id'] = coursier_id;
+
+        }
            // Determine reasonId and depotId based on your logic
-           if ( (currentUser.role_id == 2 || currentUser.role_id == 3 ) && newStateId == 5 && coursier_id) {
+           if ( (currentUser.role_id == 2 || currentUser.role_id == 3 ) && (newStateId == 5 || newStateId ==  8)  && coursier_id) {
             packageStateHistoryData['coursier_id'] = coursier_id;
           }
 
