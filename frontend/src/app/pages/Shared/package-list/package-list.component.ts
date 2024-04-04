@@ -1,8 +1,22 @@
-import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 import { CoolDialogService, CoolDialogsModule } from '@angular-cool/dialogs';
-import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { HttpClient } from '@angular/common/http';
@@ -22,37 +36,46 @@ import { ReasonsService } from 'src/app/services/reasons.service';
 @Component({
   selector: 'app-package-list',
   standalone: true,
-  imports: [CommonModule, MaterialModule, RouterModule,NgxBarcode6Module,FormsModule, ReactiveFormsModule,TablerIconsModule,CoolDialogsModule],
+  imports: [
+    CommonModule,
+    MaterialModule,
+    RouterModule,
+    NgxBarcode6Module,
+    FormsModule,
+    ReactiveFormsModule,
+    TablerIconsModule,
+    CoolDialogsModule,
+  ],
   templateUrl: './package-list.component.html',
-  styleUrls: ['./package-list.component.scss']
+  styleUrls: ['./package-list.component.scss'],
 })
 export class PackageListComponent implements OnInit {
-
-  @Input() status: string =''; // Declare the input property
-  statusOptions :any = []
-  coursiers : any = []
-  depots : any = []
-  reasons: any = []
-  @Input() from : string =''
+  @Input() status: string = ''; // Declare the input property
+  statusOptions: any = [];
+  coursiers: any = [];
+  depots: any = [];
+  reasons: any = [];
+  @Input() from: string = '';
   @Input() displayedColumns: string[] = [];
   @Input() showSelect: boolean = false;
   @Input() noedit: boolean = false;
 
-  @Output() toggleFormVisibility: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() toggleFormVisibility: EventEmitter<boolean> =
+    new EventEmitter<boolean>();
   showCreate: boolean = false;
   selectedPackageId: number;
   selectedStateId: any; // Define the property
   packages: any[] = [];
-  packages_loading = false
-  barcodeInput : any = ''
+  packages_loading = false;
+  barcodeInput: any = '';
   selectedRows: any[] = [];
   selectedChoice: number = 5; // Default value is "Livré"
-  selectedChoiceLivreur = 6
-  selectedDelivery:any
-  selectedDepot:any
-  selectedReason:any
+  selectedChoiceLivreur = 6;
+  selectedDelivery: any;
+  selectedDepot: any;
+  selectedReason: any;
 
-  currentuser : any
+  currentuser: any;
   dataSource = new MatTableDataSource<any>(); // Use 'any' type here
   displayedColumns2: string[] = [
     'description',
@@ -66,85 +89,100 @@ export class PackageListComponent implements OnInit {
   ];
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private authservice : AuthService,private reasonsService : ReasonsService, private countUpdateService: CountUpdateService,private DepotService : DepotService, private userService:UserService, private router: Router,private cdr: ChangeDetectorRef,private fb: FormBuilder, private http: HttpClient, private packageService:PackageService,private _dialogsService: CoolDialogService,private snackBar: MatSnackBar){
-  }
+  constructor(
+    private authservice: AuthService,
+    private reasonsService: ReasonsService,
+    private countUpdateService: CountUpdateService,
+    private DepotService: DepotService,
+    private userService: UserService,
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private packageService: PackageService,
+    private _dialogsService: CoolDialogService,
+    private snackBar: MatSnackBar
+  ) {}
   ngOnInit(): void {
-
-    this.getPackages()
-    this.getcurrentUser()
-    if(this.status == 'En stock' && this.from == 'depot'){
-      this.loadUsers('coursier')
-      this.loadDepots()
+    this.getPackages();
+    this.getcurrentUser();
+    if (this.status == 'En stock' && this.from == 'depot') {
+      this.loadUsers('coursier');
+      this.loadDepots();
     }
-    if(this.status == 'En cours de livraison' && this.currentuser.role_id == 4){
+    if (
+      this.status == 'En cours de livraison' &&
+      this.currentuser.role_id == 4
+    ) {
       console.log(this.reasons);
 
-      this.loadReasons()
-
+      this.loadReasons();
     }
 
-    this.statusOptions = this.packageService.getAllStatusOptions()
+    this.statusOptions = this.packageService.getAllStatusOptions();
   }
 
-  getcurrentUser(){
-    this.authservice.getUserData().subscribe(user=>{
-      this.currentuser = user
-    })
+  getcurrentUser() {
+    this.authservice.getUserData().subscribe((user) => {
+      this.currentuser = user;
+    });
   }
 
- // Host listener for keydown events on the document
- @HostListener('document:keydown', ['$event'])
- handleKeyboardEvent(event: KeyboardEvent) {
-   // Check if the key pressed is Enter (key code 13)
+  // Host listener for keydown events on the document
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    // Check if the key pressed is Enter (key code 13)
 
-   if (event.keyCode === 13) {
-    // Check if the scanned barcode ends with '|'
-if (this.barcodeInput.endsWith('|')) {
-  // Remove the '|' character from the end of the barcode
-  this.barcodeInput = this.barcodeInput.slice(0, -1);
+    if (event.keyCode === 13) {
+      // Check if the scanned barcode ends with '|'
+      if (this.barcodeInput.endsWith('|')) {
+        // Remove the '|' character from the end of the barcode
+        this.barcodeInput = this.barcodeInput.slice(0, -1);
 
-  this.addBybarcode()
-}
+        this.addBybarcode();
+      }
 
-     this.barcodeInput = ''; // Clear the input field after handling the barcode
-   }
- }
-
- addBybarcode(){
-  const filteredPackages = this.dataSource.data.filter((pack: any) => pack.package_id == this.barcodeInput);
-  if (filteredPackages.length>0){
-    const packageToAdd = filteredPackages[0];
-  const existingPackageIndex = this.selectedRows.findIndex((row: any) => row.package_id === packageToAdd.package_id);
-
-  if (existingPackageIndex === -1) {
-    this.selectedRows.push(packageToAdd); // Add package to selectedRows if not already selected
-    this.barcodeInput = ''; // Clear the input field after handling the barcode
-
-  }
+      this.barcodeInput = ''; // Clear the input field after handling the barcode
+    }
   }
 
- }
- isSelected(row: any): boolean {
-  return this.selectedRows.indexOf(row) !== -1;
-}
+  addBybarcode() {
+    const filteredPackages = this.dataSource.data.filter(
+      (pack: any) => pack.package_id == this.barcodeInput
+    );
+    if (filteredPackages.length > 0) {
+      const packageToAdd = filteredPackages[0];
+      const existingPackageIndex = this.selectedRows.findIndex(
+        (row: any) => row.package_id === packageToAdd.package_id
+      );
 
-deselectPackage(pack: any) {
-  const index = this.selectedRows.indexOf(pack);
-  if (index !== -1) {
-    this.selectedRows.splice(index, 1); // Retirer le package de selectedRows
+      if (existingPackageIndex === -1) {
+        this.selectedRows.push(packageToAdd); // Add package to selectedRows if not already selected
+        this.barcodeInput = ''; // Clear the input field after handling the barcode
+      }
+    }
   }
-}
+  isSelected(row: any): boolean {
+    return this.selectedRows.indexOf(row) !== -1;
+  }
 
-// Call this method whenever the relevant change occurs
-triggerCountUpdate() {
-  this.countUpdateService.emitCountUpdate();
-}
+  deselectPackage(pack: any) {
+    const index = this.selectedRows.indexOf(pack);
+    if (index !== -1) {
+      this.selectedRows.splice(index, 1); // Retirer le package de selectedRows
+    }
+  }
+
+  // Call this method whenever the relevant change occurs
+  triggerCountUpdate() {
+    this.countUpdateService.emitCountUpdate();
+  }
   showSnackBar(message: string, color: string): void {
     this.snackBar.open(message, 'Fermer', {
       duration: 3000,
       horizontalPosition: 'end',
       verticalPosition: 'top',
-      panelClass: ['test']
+      panelClass: ['test'],
     });
   }
 
@@ -170,27 +208,24 @@ triggerCountUpdate() {
     this.cdr.detectChanges();
   }
 
-
-
-
-
-  async onStateSelectionChange(event:any,pack:any){
+  async onStateSelectionChange(event: any, pack: any) {
     console.log(this.statusOptions);
 
-    const statusId1 = this.statusOptions.find((status: Status) => status.id === event.value) as Status | undefined;
-    const packageid = pack.package_id
-
+    const statusId1 = this.statusOptions.find(
+      (status: Status) => status.id === event.value
+    ) as Status | undefined;
+    const packageid = pack.package_id;
 
     const result = await this._dialogsService.showDialog({
       titleText: 'Confirmation',
-      questionText:`Êtes-vous sûr de vouloir modifier l'état du colis "${packageid}:${pack.description}" de "${pack.status.statusName}" à "${statusId1?.statusName}" ?`,
+      questionText: `Êtes-vous sûr de vouloir modifier l'état du colis "${packageid}:${pack.description}" de "${pack.status.statusName}" à "${statusId1?.statusName}" ?`,
       confirmActionButtonText: 'Changer état',
       cancelActionButtonText: 'Annuler',
       confirmActionButtonColor: 'primary',
     });
 
     if (result.isConfirmed) {
-      this.updatePackageState(packageid,event.value)
+      this.updatePackageState(packageid, event.value);
     }
   }
 
@@ -200,13 +235,11 @@ triggerCountUpdate() {
     if (this.status) {
       this.packageService.getAllPackages(this.status).subscribe(
         (packages: any) => {
-          packages.sort((a:any, b:any) => {
+          packages.sort((a: any, b: any) => {
             const dateA = new Date(a.updatedAt).getTime();
             const dateB = new Date(b.updatedAt).getTime();
 
-
-            return dateB -dateA   ; // Sort in descending order (latest first)
-
+            return dateB - dateA; // Sort in descending order (latest first)
           });
 
           this.dataSource = new MatTableDataSource(packages);
@@ -221,13 +254,11 @@ triggerCountUpdate() {
     } else {
       this.packageService.getAllPackages().subscribe(
         (packages: any) => {
-          packages.sort((a:any, b:any) => {
+          packages.sort((a: any, b: any) => {
             const dateA = new Date(a.updatedAt).getTime();
             const dateB = new Date(b.updatedAt).getTime();
 
-
-            return dateB -dateA    ; // Sort in descending order (latest first)
-
+            return dateB - dateA; // Sort in descending order (latest first)
           });
           this.dataSource = new MatTableDataSource(packages);
           this.dataSource.paginator = this.paginator;
@@ -245,41 +276,43 @@ triggerCountUpdate() {
     return new FormControl(row.status.id);
   }
 
-
-
-  async updatePackageStateFromButton (pack : any,state : any,from:any){
-    const alloptions = this.packageService.getAllStatusOptions()
-    const statusId1 = alloptions.find((status: Status) => status.id === state) as Status | undefined;
-    const packageid = pack.package_id
+  async updatePackageStateFromButton(pack: any, state: any, from: any) {
+    const alloptions = this.packageService.getAllStatusOptions();
+    const statusId1 = alloptions.find(
+      (status: Status) => status.id === state
+    ) as Status | undefined;
+    const packageid = pack.package_id;
     const result = await this._dialogsService.showDialog({
       titleText: 'Confirmation',
-      questionText:`Êtes-vous sûr de vouloir modifier l'état du colis "${packageid}:${pack.description}" de "${pack.status.statusName}" à "${statusId1?.statusName}" ?`,
+      questionText: `Êtes-vous sûr de vouloir modifier l'état du colis "${packageid}:${pack.description}" de "${pack.status.statusName}" à "${statusId1?.statusName}" ?`,
       confirmActionButtonText: 'Changer état',
       cancelActionButtonText: 'Annuler',
       confirmActionButtonColor: 'primary',
     });
 
     if (result.isConfirmed) {
-      this.updatePackageState(packageid,state)
+      this.updatePackageState(packageid, state);
     }
   }
 
-
-  updatePackageState(package_id : any,state : any) {
-
-
-    this.packageService.updatePackageStates([package_id],state)
-    .subscribe(
+  updatePackageState(package_id: any, state: any) {
+    this.packageService.updatePackageStates([package_id], state).subscribe(
       () => {
-        this.getPackages()
-        this.showCreate = false
-        this.showSnackBar('Le statut du colis a été mis à jour avec succès.', 'green');
-        this.triggerCountUpdate()
+        this.getPackages();
+        this.showCreate = false;
+        this.showSnackBar(
+          'Le statut du colis a été mis à jour avec succès.',
+          'green'
+        );
+        this.triggerCountUpdate();
         // Optionally, perform any other actions after updating the package state
       },
       (error: any) => {
         console.error('Error updating package state:', error);
-        this.showSnackBar('Erreur lors de la mise à jour du statut du colis.', 'red');
+        this.showSnackBar(
+          'Erreur lors de la mise à jour du statut du colis.',
+          'red'
+        );
         // Handle error appropriately
       }
     );
@@ -290,110 +323,139 @@ triggerCountUpdate() {
     return 'Package'; // Example title
   }
 
-  applyFilter(event:any): void {
-    let filterValue =''
-    if ( event?.target?.value){
-      filterValue = event.target.value
-
+  applyFilter(event: any): void {
+    let filterValue = '';
+    if (event?.target?.value) {
+      filterValue = event.target.value;
     }
     this.dataSource.filter = filterValue.trim().toLowerCase();
     // Implement logic to filter packages based on user input
   }
 
-  sendToStock(){
-    if(this.selectedRows.length>0){
-    let packageIds = this.selectedRows.map(pkg => pkg.package_id);
-    this.packageService.updatePackageStates(packageIds,4)
-    .subscribe(
-      () => {
-        this.getPackages()
-        this.selectedRows = []
-        this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
-        this.triggerCountUpdate()
-        // Optionally, perform any other actions after updating the package state
-      },
-      (error: any) => {
-        console.error('Error updating package state:', error);
-        this.showSnackBar('Erreur lors de la mise à jour du statuts des colis.', 'red');
-        // Handle error appropriately
-      }
-    );
-  }
-
-  }
-  sendtoreturn(){
-    if(this.selectedRows.length>0){
-      let packageIds = this.selectedRows.map(pkg => pkg.package_id);
-      this.packageService.updatePackageStates(packageIds,7,this.currentuser.id,null,this.selectedReason)
-      .subscribe(
+  sendToStock() {
+    if (this.selectedRows.length > 0) {
+      let packageIds = this.selectedRows.map((pkg) => pkg.package_id);
+      this.packageService.updatePackageStates(packageIds, 4).subscribe(
         () => {
-          this.getPackages()
-          this.selectedRows = []
-          this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
-          this.triggerCountUpdate()
-
+          this.getPackages();
+          this.selectedRows = [];
+          this.showSnackBar(
+            'Les statuts des colis a été mis à jour avec succès.',
+            'green'
+          );
+          this.triggerCountUpdate();
           // Optionally, perform any other actions after updating the package state
         },
         (error: any) => {
           console.error('Error updating package state:', error);
-          this.showSnackBar('Erreur lors de la mise à jour du statuts des colis.', 'red');
+          this.showSnackBar(
+            'Erreur lors de la mise à jour du statuts des colis.',
+            'red'
+          );
           // Handle error appropriately
         }
       );
     }
   }
+  sendtoreturn() {
+    if (this.selectedRows.length > 0) {
+      let packageIds = this.selectedRows.map((pkg) => pkg.package_id);
+      this.packageService
+        .updatePackageStates(
+          packageIds,
+          7,
+          this.currentuser.id,
+          null,
+          this.selectedReason
+        )
+        .subscribe(
+          () => {
+            this.getPackages();
+            this.selectedRows = [];
+            this.showSnackBar(
+              'Les statuts des colis a été mis à jour avec succès.',
+              'green'
+            );
+            this.triggerCountUpdate();
 
-  sendtodelivered(){
-    if(this.selectedRows.length>0){
-      let packageIds = this.selectedRows.map(pkg => pkg.package_id);
-      this.packageService.updatePackageStates(packageIds,6,this.currentuser.id,null,null)
-      .subscribe(
-        () => {
-          this.getPackages()
-          this.selectedRows = []
-          this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
-          this.triggerCountUpdate()
-
-          // Optionally, perform any other actions after updating the package state
-        },
-        (error: any) => {
-          console.error('Error updating package state:', error);
-          this.showSnackBar('Erreur lors de la mise à jour du statuts des colis.', 'red');
-          // Handle error appropriately
-        }
-      );
+            // Optionally, perform any other actions after updating the package state
+          },
+          (error: any) => {
+            console.error('Error updating package state:', error);
+            this.showSnackBar(
+              'Erreur lors de la mise à jour du statuts des colis.',
+              'red'
+            );
+            // Handle error appropriately
+          }
+        );
     }
   }
-  senttopayed(){
-    if(this.selectedRows.length>0){
-      let packageIds = this.selectedRows.map(pkg => pkg.package_id);
-      this.packageService.updatePackageStates(packageIds,8,this.currentuser.id,null,null)
-      .subscribe(
-        () => {
-          this.getPackages()
-          this.selectedRows = []
-          this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
-          this.triggerCountUpdate()
 
-          // Optionally, perform any other actions after updating the package state
-        },
-        (error: any) => {
-          console.error('Error updating package state:', error);
-          this.showSnackBar('Erreur lors de la mise à jour du statuts des colis.', 'red');
-          // Handle error appropriately
-        }
-      );
+  sendtodelivered() {
+    if (this.selectedRows.length > 0) {
+      let packageIds = this.selectedRows.map((pkg) => pkg.package_id);
+      this.packageService
+        .updatePackageStates(packageIds, 6, this.currentuser.id, null, null)
+        .subscribe(
+          () => {
+            this.getPackages();
+            this.selectedRows = [];
+            this.showSnackBar(
+              'Les statuts des colis a été mis à jour avec succès.',
+              'green'
+            );
+            this.triggerCountUpdate();
+
+            // Optionally, perform any other actions after updating the package state
+          },
+          (error: any) => {
+            console.error('Error updating package state:', error);
+            this.showSnackBar(
+              'Erreur lors de la mise à jour du statuts des colis.',
+              'red'
+            );
+            // Handle error appropriately
+          }
+        );
+    }
+  }
+  senttopayed() {
+    if (this.selectedRows.length > 0) {
+      let packageIds = this.selectedRows.map((pkg) => pkg.package_id);
+      this.packageService
+        .updatePackageStates(packageIds, 8, this.currentuser.id, null, null)
+        .subscribe(
+          () => {
+            this.getPackages();
+            this.selectedRows = [];
+            this.showSnackBar(
+              'Les statuts des colis a été mis à jour avec succès.',
+              'green'
+            );
+            this.triggerCountUpdate();
+
+            // Optionally, perform any other actions after updating the package state
+          },
+          (error: any) => {
+            console.error('Error updating package state:', error);
+            this.showSnackBar(
+              'Erreur lors de la mise à jour du statuts des colis.',
+              'red'
+            );
+            // Handle error appropriately
+          }
+        );
     }
   }
 
   loadUsers(role: any): void {
-
     this.userService.getUsersByRole(role).subscribe(
       (users: any) => {
         users.reverse();
-        this.coursiers = users
-        this.selectedDelivery = this.coursiers.length > 0 ? this.coursiers[0].id : null;
-
+        this.coursiers = users;
+        this.selectedDelivery =
+          this.coursiers.length > 0 ? this.coursiers[0].id : null;
       },
       (error: any) => {
         console.error('Error fetching coursiers:', error);
@@ -401,29 +463,26 @@ triggerCountUpdate() {
     );
   }
   loadDepots(): void {
-
     this.DepotService.getAllDepots().subscribe(
       (depots: any) => {
-        this.depots = depots
-        this.selectedDepot = this.depots.length > 0 ? this.depots[0].depot_id : null;
-
+        this.depots = depots;
+        this.selectedDepot =
+          this.depots.length > 0 ? this.depots[0].depot_id : null;
       },
       (error: any) => {
         console.error('Error fetching depots:', error);
       }
     );
   }
-
   loadReasons(): void {
-
     this.reasonsService.getAllreasons().subscribe(
       (reasons: any) => {
         console.log(reasons);
 
-        this.reasons = reasons
-        this.selectedReason = this.reasons.length > 0 ? this.reasons[0].reason_id : null;
+        this.reasons = reasons;
+        this.selectedReason =
+          this.reasons.length > 0 ? this.reasons[0].reason_id : null;
         console.log(reasons);
-
       },
       (error: any) => {
         console.error('Error fetching depots:', error);
@@ -431,50 +490,62 @@ triggerCountUpdate() {
     );
   }
 
-  onchoiceAction(ev:any){}
-  sendfromStock(from:string){
-    if(from == 'delivery'){
-      if(this.selectedRows.length>0){
-        let packageIds = this.selectedRows.map(pkg => pkg.package_id);
-        this.packageService.updatePackageStates(packageIds,5,this.selectedDelivery)
-        .subscribe(
-          () => {
-            this.getPackages()
-            this.selectedRows = []
-            this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
-            this.triggerCountUpdate()
+  onchoiceAction(ev: any) {}
+  sendfromStock(from: string) {
+    if (from == 'delivery') {
+      if (this.selectedRows.length > 0) {
+        let packageIds = this.selectedRows.map((pkg) => pkg.package_id);
+        this.packageService
+          .updatePackageStates(packageIds, 5, this.selectedDelivery)
+          .subscribe(
+            () => {
+              this.getPackages();
+              this.selectedRows = [];
+              this.showSnackBar(
+                'Les statuts des colis a été mis à jour avec succès.',
+                'green'
+              );
+              this.triggerCountUpdate();
 
-            // Optionally, perform any other actions after updating the package state
-          },
-          (error: any) => {
-            console.error('Error updating package state:', error);
-            this.showSnackBar('Erreur lors de la mise à jour du statuts des colis.', 'red');
-            // Handle error appropriately
-          }
-        );
+              // Optionally, perform any other actions after updating the package state
+            },
+            (error: any) => {
+              console.error('Error updating package state:', error);
+              this.showSnackBar(
+                'Erreur lors de la mise à jour du statuts des colis.',
+                'red'
+              );
+              // Handle error appropriately
+            }
+          );
       }
-    }
-    else{
-      if(this.selectedRows.length>0){
-        let packageIds = this.selectedRows.map(pkg => pkg.package_id);
-        this.packageService.updatePackageStates(packageIds,3,null,this.selectedDepot)
-        .subscribe(
-          () => {
-            this.getPackages()
-            this.selectedRows = []
-            this.showSnackBar('Les statuts des colis a été mis à jour avec succès.', 'green');
-            this.triggerCountUpdate()
+    } else {
+      if (this.selectedRows.length > 0) {
+        let packageIds = this.selectedRows.map((pkg) => pkg.package_id);
+        this.packageService
+          .updatePackageStates(packageIds, 3, null, this.selectedDepot)
+          .subscribe(
+            () => {
+              this.getPackages();
+              this.selectedRows = [];
+              this.showSnackBar(
+                'Les statuts des colis a été mis à jour avec succès.',
+                'green'
+              );
+              this.triggerCountUpdate();
 
-            // Optionally, perform any other actions after updating the package state
-          },
-          (error: any) => {
-            console.error('Error updating package state:', error);
-            this.showSnackBar('Erreur lors de la mise à jour du statuts des colis.', 'red');
-            // Handle error appropriately
-          }
-        );
+              // Optionally, perform any other actions after updating the package state
+            },
+            (error: any) => {
+              console.error('Error updating package state:', error);
+              this.showSnackBar(
+                'Erreur lors de la mise à jour du statuts des colis.',
+                'red'
+              );
+              // Handle error appropriately
+            }
+          );
       }
     }
   }
-
 }
