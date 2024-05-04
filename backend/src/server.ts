@@ -79,7 +79,8 @@ async function createRolesAndAdminIfNotExist(): Promise<void> {
         username: 'marwa',
         password: hashedPassword,
         email: 'marwa@gmail.com',
-        role_id: 1 // Assuming role_id 1 represents the admin role
+        role_id: 1, // Assuming role_id 1 represents the admin role
+        issuper:true
       };
 
     const existingAdmin = await User.findOne({ where: { username: adminData.username } as any });

@@ -21,6 +21,10 @@ export class User extends Model<User> {
   @Column({ allowNull: false, defaultValue: true })
   active: boolean; // User activation status
 
+  
+  @Column({ allowNull: true, defaultValue: false })
+  issuper: boolean; // User activation status
+
   @ForeignKey(() => Role)
   @Column
   role_id: number;
