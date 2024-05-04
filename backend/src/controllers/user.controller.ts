@@ -97,6 +97,38 @@ export class userController {
     }
   };
 
+  public toggleActive = async (...params) => {
+    const [req, res, next] = params;
+
+    const currentUser = req["currentUser"];
+    const { user_id } = req.body; // Assuming you send packageIds and newStateId in the request body
+
+
+
+    try {
+    // Find the user by ID
+    const user = await User.findByPk(user_id);
+
+    // Toggle the active status
+    if (!currentUser.issuper && user.role_id == 1 ) {
+      return res
+        .status(404)
+        .json({ error: "Package not found or unauthorized" });
+    }
+    user.active = !user.active;
+
+    // Save the updated user
+    const updatedUser = await user.save();
+    res.json(updatedUser);
+  
+  
+     
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
   /*
   public updateUser = (...params) => {
     const [req, res, next] = params;

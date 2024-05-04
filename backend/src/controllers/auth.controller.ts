@@ -277,6 +277,15 @@ export class authController {
           ]
         });
       }
+      if (user && !user['active']) {
+        return res.status(HttpStatusCodes.BAD_REQUEST).json({
+          errors: [
+            {
+              msg: "Account disabled"
+            }
+          ]
+        });
+      }
       const isMatch = bcrypt.compareSync(password, user['password']);
 
       if (!isMatch) {

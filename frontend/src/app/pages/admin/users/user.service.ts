@@ -20,6 +20,18 @@ export class UserService {
     return this.http.get<User[]>(`${this.appConfigService.getBaseUrl()}/api/user/${role}`,{headers});
   }
 
+  toggleActive(user_id:number): Observable<User[]> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    });
+
+    let body :any= {
+      user_id: user_id,
+    };
+
+    return this.http.put<any>(`${this.appConfigService.getBaseUrl()}/api/user/toggleactive`, body, { headers })
+  }
+
   createUser(user: any, role: string): Observable<any> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`

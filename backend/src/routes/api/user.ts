@@ -17,6 +17,7 @@ router.get( "/manager",auth,roleAuthorization(['Administrateur']),(...params) =>
 router.get( "/magasinier",auth,roleAuthorization(['Administrateur']),(...params) => ctrl.getAllMagasinier(...params));
 router.get( "/coursier",auth,roleAuthorization(['Administrateur','Manager','Magasinier']),(...params) => ctrl.getAllCoursier(...params));
 router.get( "/fournisseur",auth,roleAuthorization(['Administrateur']),(...params) => ctrl.getAllFournisseur(...params));
+router.put("/toggleactive", auth,roleAuthorization(['Administrateur']),(...params) => ctrl.toggleActive(...params));
 
 
 //router.get( "/list",auth,(...params) => ctrl.findAllUsers(...params));

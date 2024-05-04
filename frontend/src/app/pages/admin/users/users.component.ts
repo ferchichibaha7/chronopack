@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DepotService } from 'src/app/services/depot.service';
 import { PackageService } from 'src/app/services/packages.service';
+import { AuthService } from 'src/app/auth/auth.service';
 
 export interface User {
   id: number;
@@ -29,7 +30,7 @@ export interface User {
 export class UsersComponent implements OnInit {
   userForm: FormGroup;
   depots : any = []
-
+  currentuser:any
   showCreate= false
   users_loading = false
   role = '';
@@ -42,6 +43,7 @@ export class UsersComponent implements OnInit {
     private userService: UserService,
     private route: ActivatedRoute,
     private DepotService : DepotService,
+    private authservice : AuthService
 
   ) {
     this.userForm = this.fb.group({
@@ -59,10 +61,15 @@ export class UsersComponent implements OnInit {
       this.loadUsers(this.role); // Load users based on the specified role
     });
     this.loadDepots()
+    this.getcurrentUser()
 
   }
 
-
+  getcurrentUser() {
+    this.authservice.getUserData().subscribe((user) => {
+      this.currentuser = user;
+    });
+  }
 
   loadDepots(): void {
 

@@ -19,6 +19,15 @@ export default async function(req, res, next) {
         { model: Depot }
       ]
     });
+    if (user && !user['active']) {
+      return res.status(HttpStatusCodes.BAD_REQUEST).json({
+        errors: [
+          {
+            msg: "Account disabled"
+          }
+        ]
+      });
+    }
     req.currentUser = user
     next();
   } catch (err) {
