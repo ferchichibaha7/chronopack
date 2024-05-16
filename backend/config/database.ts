@@ -14,7 +14,7 @@ const pg_pass = process.env.PG_PASS;
 
 const sequelize = new Sequelize({
   database: pg_db,
-  dialect: 'mysql',
+  dialect: 'postgres',
   username: pg_user,
   password: pg_pass,
   logging:false,
