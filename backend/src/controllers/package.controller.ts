@@ -150,7 +150,7 @@ export class packageController {
         req["currentUser"].role_id === 2 ||
         req["currentUser"].role_id === 3
       ) {
-        const packageIdQuery = `SELECT depot_id FROM PackageStateHistories WHERE package_id = Package.package_id ORDER BY createdAt DESC LIMIT 1`;
+        const packageIdQuery = `SELECT "depot_id" FROM "PackageStateHistories" WHERE "package_id" = "Package"."package_id" ORDER BY "createdAt" DESC LIMIT 1`;
 
         const depotCondition = {
           [Op.or]: [
@@ -175,7 +175,7 @@ export class packageController {
       } else if (req["currentUser"].role_id === 4) {
         // Coursier
       
-        const packageIdQuery = `SELECT coursier_id FROM PackageStateHistories WHERE package_id = Package.package_id ORDER BY createdAt DESC LIMIT 1`;
+        const packageIdQuery = `SELECT "coursier_id" FROM "PackageStateHistories" WHERE "package_id" = "Package"."package_id" ORDER BY "createdAt" DESC LIMIT 1`;
         
       const depotCondition = {
         [Op.and]: [
@@ -262,7 +262,7 @@ export class packageController {
         // Magasinier or Manager
         // Return packages where depot_id matches the current user's depot_id
 
-        const packageIdQuery = `SELECT depot_id FROM PackageStateHistories WHERE package_id = Package.package_id ORDER BY createdAt DESC LIMIT 1`;
+        const packageIdQuery = `SELECT "depot_id" FROM "PackageStateHistories" WHERE "package_id" = "Package"."package_id" ORDER BY "createdAt" DESC LIMIT 1`;
 
       const depotCondition = {
         [Op.or]: [
@@ -286,7 +286,7 @@ export class packageController {
         });
       } else if (req["currentUser"].role_id === 4) {
     
-        const packageIdQuery = `SELECT coursier_id FROM PackageStateHistories WHERE package_id = Package.package_id ORDER BY createdAt DESC LIMIT 1`;
+        const packageIdQuery = `SELECT "coursier_id" FROM "PackageStateHistories" WHERE "package_id" = "Package"."package_id" ORDER BY "createdAt" DESC LIMIT 1`;
         
       const depotCondition = {
         [Op.and]: [
