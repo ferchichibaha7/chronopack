@@ -35,7 +35,7 @@ export class UsersComponent implements OnInit {
   users_loading = false
   role = '';
   dataSource: MatTableDataSource<User>;
-  displayedColumns: string[] = ['id', 'username', 'email','depot', 'role'];
+  displayedColumns: string[] = ['id', 'username', 'email','depot', 'role','active'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
@@ -65,9 +65,22 @@ export class UsersComponent implements OnInit {
 
   }
 
+  onTogglestate(user:any){
+    this.userService.toggleActive(user.id)
+    .subscribe(response => {
+      console.log('User status updated successfully', response);
+    }, error => {
+      console.error('Error updating user status', error);
+    });
+    this.getcurrentUser()
+    this.loadUsers(this.role); // Load users based on the specified role
+
+  }
+
   getcurrentUser() {
     this.authservice.getUserData().subscribe((user) => {
       this.currentuser = user;
+
     });
   }
 
