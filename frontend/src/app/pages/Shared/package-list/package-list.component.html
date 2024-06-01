@@ -344,7 +344,14 @@ Select colis
                     ></i-tabler></mat-icon
                   >Suivi colis
                 </button>
-
+                <button *ngIf=" currentuser.role_id == 1"  [routerLink]="['/admin/package/edit']" [queryParams]="{ packageid: row.package_id }" mat-menu-item>
+                  <mat-icon class="d-flex align-items-center"
+                    ><i-tabler
+                      name="pencil"
+                      class="icon-16 d-flex"
+                    ></i-tabler></mat-icon
+                  >Edit
+                </button>
 
               </mat-menu>
               </td>

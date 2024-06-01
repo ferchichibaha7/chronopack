@@ -5,7 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class AppconfigService {
 
-  private baseUrl = 'http://localhost:5000'; // Default base URL
+  //private baseUrl = 'https://api.chronopack.tn'; // Default base URL
+  private baseUrl = 'http://localhost:5000'; // Default base URL local
 
   constructor() { }
 

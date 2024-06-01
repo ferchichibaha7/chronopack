@@ -18,6 +18,7 @@ import { InDeliveryComponent } from './pages/Manager/in-delivery/in-delivery.com
 import { RetourneComponent } from './pages/Manager/retourne/retourne.component';
 import { DeliveredComponent } from './pages/Manager/delivered/delivered.component';
 import { DeliveredPayedComponent } from './pages/Manager/delivered-payed/delivered-payed.component';
+import { EditpackageComponent } from './pages/admin/editpackage/editpackage.component';
 
 const routes: Routes = [
   {
@@ -50,6 +51,14 @@ const routes: Routes = [
       {
         path: 'tracking',
         component: TrackingComponent,
+      },
+      {
+        path: 'admin/package/edit',
+        component: EditpackageComponent,
+        canActivate: [RoleGuard],
+        data: {
+          expectedRoles: ['Administrateur'], // Specify the expected roles for this route
+        },
       },
       {
         path: 'packages',
