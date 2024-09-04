@@ -32,8 +32,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     TablerIconsModule.pick(TablerIcons),
   ],
   declarations: [
-    AppSideLoginComponent,
-    AppSideRegisterComponent,
+
   ],
 })
 export class AuthenticationModule {}

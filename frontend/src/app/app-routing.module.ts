@@ -60,6 +60,7 @@ const routes: Routes = [
           expectedRoles: ['Administrateur'], // Specify the expected roles for this route
         },
       },
+
       {
         path: 'packages',
         canActivate: [RoleGuard],

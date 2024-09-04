@@ -7,16 +7,23 @@ export class depotController {
   public getAllDepots = async (...params) => {
     const [req, res, next] = params;
     try {
+      let depots
       // Assuming currentUser and its depot_id are available in the request object
-      const currentUserDepotId = req.currentUser.depot_id;
+      if(req.currentUser){
       
-      const depots = await Depot.findAll({
+      depots = await Depot.findAll({
         where: {
-          depot_id: { [Op.ne]: currentUserDepotId } // Exclude depots with currentUser's depot_id
+          depot_id: { [Op.ne]: req.currentUser.depot_id } // Exclude depots with currentUser's depot_id
         },
         include: [{ all: true }]
       });
-      
+    }
+    else{
+      depots = await Depot.findAll({
+       
+        include: [{ all: true }]
+      });
+    }
       res.json(depots);
     } catch (error) {
       console.error(error);

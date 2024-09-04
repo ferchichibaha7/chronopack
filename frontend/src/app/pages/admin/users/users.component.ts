@@ -34,6 +34,7 @@ export class UsersComponent implements OnInit {
   showCreate= false
   users_loading = false
   role = '';
+  testd : any
   dataSource: MatTableDataSource<User>;
   displayedColumns: string[] = ['id', 'username', 'email','depot', 'role','active'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -73,7 +74,10 @@ export class UsersComponent implements OnInit {
       console.error('Error updating user status', error);
     });
     this.getcurrentUser()
-    this.loadUsers(this.role); // Load users based on the specified role
+    setTimeout(() => {
+      this.loadUsers(this.role); // Load users based on the specified role
+
+    }, 100);
 
   }
 

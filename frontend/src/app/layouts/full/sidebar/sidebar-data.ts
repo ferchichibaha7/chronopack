@@ -67,12 +67,6 @@ export const navItems: NavItem[] = [
     iconName: 'scan-eye',
     route: '/tracking',
   },
-  {
-    displayName: 'Paramètres',
-    iconName: 'settings',
-    route: '/settings',
-    roles:['Administrateur']
-  },
 
   {
     displayName: 'Stock',

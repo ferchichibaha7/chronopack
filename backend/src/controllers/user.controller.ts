@@ -110,16 +110,16 @@ export class userController {
     const user = await User.findByPk(user_id);
 
     // Toggle the active status
-    if (!currentUser.issuper && user.role_id == 1 ) {
+    if (!currentUser.issuper || user.issuper   ) {
       return res
-        .status(404)
-        .json({ error: "Package not found or unauthorized" });
+        .status(401)
+        .json({ error: "No" });
     }
     user.active = !user.active;
 
     // Save the updated user
     const updatedUser = await user.save();
-    res.json(updatedUser);
+    res.json({ message: "updated" });
   
   
      

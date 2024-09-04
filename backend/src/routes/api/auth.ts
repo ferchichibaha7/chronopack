@@ -25,6 +25,7 @@ router.post( "/create/fournisseur",auth,roleAuthorization(['Administrateur']),(.
 
 router.post( "/login",validateLogin,(...params) => ctrl.login(...params));
 router.get("/current",auth,(...params) => ctrl.currentUser(...params) );
+router.post("/signup",(...params) => ctrl.register(...params) );
 
 
 export default router;

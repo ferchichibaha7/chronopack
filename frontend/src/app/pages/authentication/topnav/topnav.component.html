@@ -1,0 +1,36 @@
+<header class="bg-white shadow">
+  <div class="container mx-auto flex justify-between items-center py-4 px-4 sm:px-6 md:px-24">
+      <div class="text-xl font-bold text-red-500">
+          <a routerLink="/">
+              <img src="./assets/images/logos/logo.png" class="align-middle m-2 h-12 w-auto" alt="logo" />
+          </a>
+      </div>
+      <nav class="hidden md:flex space-x-6">
+          <ul class="flex space-x-6">
+              <li><a routerLink="/authentication" class="text-gray-700">Accueil</a></li>
+              <li><a routerLink="#" class="text-gray-700">Menu</a></li>
+              <li><a routerLink="#" class="text-gray-700">Service</a></li>
+              <li><a routerLink="#" class="text-gray-700">Découvrir</a></li>
+              <li><a routerLink="#" class="text-gray-700">Contact</a></li>
+          </ul>
+      </nav>
+      <button routerLink="/authentication/login" class="hidden md:block bg-orange-500 text-white px-4 py-2 rounded">Login</button>
+      <button (click)="toggleMenu()" class="block md:hidden focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+          </svg>
+      </button>
+  </div>
+  <div *ngIf="menuOpen" class="md:hidden">
+      <nav class="px-2 pt-2 pb-4 space-y-1 sm:px-3">
+          <ul class="space-y-2">
+              <li><a routerLink="/authentication" class="block text-gray-700">Accueil</a></li>
+              <li><a routerLink="#" class="block text-gray-700">Menu</a></li>
+              <li><a routerLink="#" class="block text-gray-700">Service</a></li>
+              <li><a routerLink="#" class="block text-gray-700">Découvrir</a></li>
+              <li><a routerLink="#" class="block text-gray-700">Contact</a></li>
+              <li><a routerLink="/authentication/login" class="block text-orange-600">Login</a></li>
+          </ul>
+      </nav>
+  </div>
+</header>

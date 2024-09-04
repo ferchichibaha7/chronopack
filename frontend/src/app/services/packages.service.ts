@@ -91,6 +91,17 @@ export class PackageService {
     return this.http.get(`${this.appConfigService.getBaseUrl()}/api/pack/${packageId}`, { headers });
   }
 
+  updatePackage(packagedata:any){
+    console.log(packagedata);
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    });
+
+    // Make a GET request to the API endpoint with the package ID
+    return this.http.put(`${this.appConfigService.getBaseUrl()}/api/pack/update`,packagedata, { headers });
+  }
+
   getAllStatusOptions() {
     return [
       { id: 1, statusName: 'Brouillon', icon: { name: 'draft', color: 'gray' } },

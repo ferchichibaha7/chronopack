@@ -6,7 +6,7 @@ const router = Router();
 const ctrl = new depotController();
 
 // Get all depots
-router.get('/', auth, (...params) => ctrl.getAllDepots(...params));
+router.get('/', (...params) => ctrl.getAllDepots(...params));
 
 // Create a new depot
 router.post('/create', auth, (...params) => ctrl.createDepot(...params));

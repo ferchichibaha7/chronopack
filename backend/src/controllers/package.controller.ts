@@ -399,6 +399,62 @@ export class packageController {
 
 
 
+  public async updatePackages(req, res, next) {
+    const currentUser = req["currentUser"];
+    const { packageUpdates } = req.body; // Assuming packageUpdates is an array of objects with packageId and newData
+
+    // Ensure the user is an admin
+    if (!currentUser || currentUser.role_id !== 1) {
+        return res.status(HttpStatusCodes.FORBIDDEN).json({ error: "Unauthorized access" });
+    }
+
+    try {
+        for (const update of packageUpdates) {
+            const { packageId, newData } = update;
+            
+            // Find the package by ID
+            const pack = await Package.findByPk(packageId);
+            if (!pack) {
+                return res.status(HttpStatusCodes.NOT_FOUND).json({ error: `Package with ID ${packageId} not found` });
+            }
+
+            // Update the package with new data
+            Object.assign(pack, newData);
+
+            // Save the changes to the database
+            await pack.save();
+  
+            // Create a package state history entry
+            const packageStateHistoryData = {
+                package_id: packageId,
+                state_id: pack.status_id, // Assuming status_id is part of the updates
+                user_id: currentUser.id, // Admin user who made the change
+            };
+
+            // Add optional fields to packageStateHistoryData if they exist in newData
+            if (newData.depot_id) {
+                packageStateHistoryData['depot_id'] = newData.depot_id;
+            }
+            if (newData.coursier_id) {
+                packageStateHistoryData['coursier_id'] = newData.coursier_id;
+            }
+            if (newData.reason_id) {
+                packageStateHistoryData['reason_id'] = newData.reason_id;
+            }
+
+            // Create a new package history entry
+            await PackageStateHistory.create(packageStateHistoryData);
+        }
+
+        // Return success response
+        res.status(HttpStatusCodes.OK).json({ message: "Packages updated successfully" });
+    } catch (error) {
+        console.error("Error updating packages:", error);
+        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
+    }
+}
+
+
   public getPackageStatusChartDataa = async (...params) => {
     const [req, res, next] = params;
   

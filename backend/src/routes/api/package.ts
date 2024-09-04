@@ -4,6 +4,7 @@ import { check } from "express-validator/check";
 
 import { packageController } from '../../controllers/package.controller';
 import auth from '../../middleware/auth';
+import roleAuthorization from '../../middleware/roleAuthorization';
 
 
 const router = Router();
@@ -21,6 +22,9 @@ router.post("/create", auth, (...params) => ctrl.createPackage(...params));
 
 // Update package state
 router.put("/states", auth, (...params) => ctrl.updatePackageStates(...params));
+
+// Update package details by admin
+router.put("/update", auth,roleAuthorization(['Administrateur']), (...params) => ctrl.updatePackages(...params));
 
 // Get package by ID
 router.get("/:id", auth, (...params) => ctrl.getPackageById(...params));

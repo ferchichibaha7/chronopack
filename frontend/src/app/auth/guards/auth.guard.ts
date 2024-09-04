@@ -15,7 +15,7 @@ export const AuthGuard: CanActivateFn | CanActivateChildFn = (route, state) =>
             if ( !authenticated )
             {
                 // Redirect to the sign-in page with a redirectUrl param
-                router.navigate(['/authentication/login']);
+                router.navigate(['/authentication']);
 
                 return of(false);
             }

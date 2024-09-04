@@ -1,3 +1,183 @@
 
-<app-admin-dashboard *ngIf="userData && userData.role.role_name == 'Administrateur'"></app-admin-dashboard>
-<div *ngIf="userData && userData.role.role_name != 'Administrateur'">Dashboard not ready yet</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 p-4">
+  <div class="col-span-1">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24">
+        <mat-card-title>All Packages</mat-card-title>
+        <div class="grid grid-cols-7 gap-4 mt-6">
+          <div class="col-span-5">
+            <h4 class="mat-headline-5">42</h4>
+            <div class="flex items-center mt-4">
+              <button
+                mat-mini-fab
+                class="bg-light-success text-success shadow-none icon-27"
+              >
+                <i-tabler name="arrow-up-right" class="icon-20"></i-tabler>
+              </button>
+              <div class="mat-body-1 font-semibold ml-3">8</div>
+              <div class="mat-body-1 ml-1">Today</div>
+            </div>
+          </div>
+          <div class="col-span-2 flex items-start">
+            <img
+              src="/assets/images/backgrounds/package.png"
+              alt="image"
+              class="w-16 h-16 inline-block align-middle"
+            />
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="col-span-1">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24">
+        <mat-card-title>Packages This Month</mat-card-title>
+        <div class="grid grid-cols-7 gap-4 mt-6">
+          <div class="col-span-5">
+            <h4 class="mat-headline-5">27</h4>
+            <div class="flex items-center mt-4">
+              <button
+                mat-mini-fab
+                class="bg-light-success text-success shadow-none icon-27"
+              >
+                <i-tabler name="arrow-up-right" class="icon-20"></i-tabler>
+              </button>
+              <div class="mat-body-1 font-semibold ml-3">6</div>
+              <div class="mat-body-1 ml-1">Today</div>
+            </div>
+          </div>
+          <div class="col-span-2 flex items-start">
+            <img
+              src="/assets/images/backgrounds/package.png"
+              alt="image"
+              class="w-16 h-16 inline-block align-middle"
+            />
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="col-span-1">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24">
+        <mat-card-title>Packages Last Month</mat-card-title>
+        <div class="grid grid-cols-7 gap-4 mt-6">
+          <div class="col-span-5">
+            <h4 class="mat-headline-5">35</h4>
+            <div class="flex items-center mt-4">
+              <button
+                mat-mini-fab
+                class="bg-light-success text-success shadow-none icon-27"
+              >
+                <i-tabler name="arrow-up-right" class="icon-20"></i-tabler>
+              </button>
+              <div class="mat-body-1 font-semibold ml-3">7</div>
+              <div class="mat-body-1 ml-1">Today</div>
+            </div>
+          </div>
+          <div class="col-span-2 flex items-start">
+            <img
+              src="/assets/images/backgrounds/package.png"
+              alt="image"
+              class="w-16 h-16 inline-block align-middle"
+            />
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="col-span-1">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24">
+        <mat-card-title>Packages Last Year</mat-card-title>
+        <div class="grid grid-cols-7 gap-4 mt-6">
+          <div class="col-span-5">
+            <h4 class="mat-headline-5">50</h4>
+            <div class="flex items-center mt-4">
+              <button
+                mat-mini-fab
+                class="bg-light-success text-success shadow-none icon-27"
+              >
+                <i-tabler name="arrow-up-right" class="icon-20"></i-tabler>
+              </button>
+              <div class="mat-body-1 font-semibold ml-3">10</div>
+              <div class="mat-body-1 ml-1">Today</div>
+            </div>
+          </div>
+          <div class="col-span-2 flex items-start">
+            <img
+              src="/assets/images/backgrounds/package.png"
+              alt="image"
+              class="w-16 h-16 inline-block align-middle"
+            />
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="col-span-1">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24">
+        <mat-card-title>Today's Packages</mat-card-title>
+        <div class="grid grid-cols-7 gap-4 mt-6">
+          <div class="col-span-5">
+            <h4 class="mat-headline-5">18</h4>
+            <div class="flex items-center mt-4">
+              <button
+                mat-mini-fab
+                class="bg-light-success text-success shadow-none icon-27"
+              >
+                <i-tabler name="arrow-up-right" class="icon-20"></i-tabler>
+              </button>
+              <div class="mat-body-1 font-semibold ml-3">4</div>
+              <div class="mat-body-1 ml-1">Today</div>
+            </div>
+          </div>
+          <div class="col-span-2 flex items-start">
+            <img
+              src="/assets/images/backgrounds/package.png"
+              alt="image"
+              class="w-16 h-16 inline-block align-middle"
+            />
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="col-span-1">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24">
+        <mat-card-title>Yesterday's Packages</mat-card-title>
+        <div class="grid grid-cols-7 gap-4 mt-6">
+          <div class="col-span-5">
+            <h4 class="mat-headline-5">22</h4>
+            <div class="flex items-center mt-4">
+              <button
+                mat-mini-fab
+                class="bg-light-success text-success shadow-none icon-27"
+              >
+                <i-tabler name="arrow-up-right" class="icon-20"></i-tabler>
+              </button>
+              <div class="mat-body-1 font-semibold ml-3">5</div>
+              <div class="mat-body-1 ml-1">Today</div>
+            </div>
+          </div>
+          <div class="col-span-2 flex items-start">
+            <img
+              src="/assets/images/backgrounds/package.png"
+              alt="image"
+              class="w-16 h-16 inline-block align-middle"
+            />
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+

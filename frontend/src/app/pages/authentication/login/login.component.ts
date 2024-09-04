@@ -1,11 +1,19 @@
+import { CoolDialogsModule } from '@angular-cool/dialogs';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { TablerIconsModule } from 'angular-tabler-icons';
 import { AuthService } from 'src/app/auth/auth.service';
+import { MaterialModule } from 'src/app/material.module';
+import { PackageListComponent } from '../../Shared/package-list/package-list.component';
+import { TopnavComponent } from '../topnav/topnav.component';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
+  standalone: true,
+  imports: [CommonModule,TopnavComponent,RouterModule, MaterialModule, FormsModule, ReactiveFormsModule,TablerIconsModule,CoolDialogsModule,PackageListComponent],
 })
 export class AppSideLoginComponent implements OnInit {
   loginForm!: FormGroup;

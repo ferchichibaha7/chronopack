@@ -1,0 +1,83 @@
+<app-topnav></app-topnav>
+<main>
+  <!-- Section Héro -->
+  <section class="container mx-auto px-4 sm:px-6 md:px-24 py-8 sm:py-12 md:py-16">
+      <div class="flex flex-col-reverse md:flex-row items-center">
+          <div class="md:w-1/2 px-4 sm:px-6 md:px-8 mt-4 md:mt-0 flex justify-center relative order-last md:order-last">
+              <img src="./assets/images/deliv1.png" alt="Livreur" class="w-3/4 md:w-full relative z-10">
+          </div>
+          <div class="md:w-1/2 px-4 sm:px-6 md:px-8 ">
+              <h1 class="text-4xl md:text-5xl font-bold mb-4">Nous avons une livraison plus rapide dans votre ville</h1>
+              <p class="text-gray-600 mb-6">Nous sommes le service de livraison le plus rapide et préféré dans toute la ville. Que ce soit pour des courses de dernière minute, des livraisons de repas ou des colis importants, nous nous engageons à fournir un service exceptionnel à chaque fois. Avec une équipe dévouée et une technologie de pointe, nous assurons des livraisons rapides et fiables, jour et nuit. Faites confiance à notre expertise pour tous vos besoins de livraison.</p>
+          </div>
+      </div>
+  </section>
+
+  <!-- Pourquoi nous choisir Section -->
+  <section class="bg-white py-8 sm:py-12 md:py-16">
+    <div class="container mx-auto px-4 sm:px-6 md:px-6">
+        <div class="flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 flex justify-center">
+                <img src="./assets/images/truck.png" alt="Homme pensant" class="w-3/4 md:w-full">
+            </div>
+            <div class="md:w-1/2 mt-8 md:mt-0 text-left md:text-left">
+              <h2 class="text-4xl font-bold mb-8 text-left">Qu'est-ce qui vous a poussé à utiliser notre service ?</h2>
+              <p class="text-gray-600 mb-6">Commandez votre produit à tout moment et nous les livrerons directement chez vous. Nous avons une livraison plus rapide.</p>
+              <div class="text-left md:text-left points">
+                  <div class="flex items-center mb-4">
+                      <img src="./assets/images/icons/thumbs-up.png" alt="Positive reviews icon" class="w-6 h-6 mr-2">
+                      <div class="text-gray-800 font-bold text-xl">99% d'avis positifs</div>
+                  </div>
+                  <div class="flex items-center mb-4">
+                      <img src="./assets/images/icons/customer-priority.png" alt="Customer priority icon" class="w-6 h-6 mr-2">
+                      <div class="text-gray-800 font-bold text-xl">Nos clients sont notre priorité absolue.</div>
+                  </div>
+                  <div class="flex items-center mb-4">
+                      <img src="./assets/images/icons/customer-service.png" alt="Customer service icon" class="w-6 h-6 mr-2">
+                      <div class="text-gray-800 font-bold text-xl">Service clientèle exceptionnel.</div>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+  <!-- Section Caractéristiques -->
+  <section class="bg-gray-50 py-8 sm:py-12 md:py-16">
+      <div class="container mx-auto px-4 sm:px-6 md:px-6">
+          <h2 class="text-3xl font-bold mb-8 text-center">Nos Caractéristiques</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div class="bg-white p-8 sm:p-12 md:p-24 rounded-lg shadow-lg text-center">
+                  <div class="text-red-500 text-4xl mb-4">🚚</div>
+                  <h3 class="text-xl font-bold mb-2">Livraison Rapide</h3>
+                  <p class="text-gray-600">Faites livrer vos produits en un temps record grâce à notre réseau de livraison efficace.</p>
+              </div>
+              <div class="bg-white p-8 sm:p-12 md:p-24 rounded-lg shadow-lg text-center">
+                  <div class="text-red-500 text-4xl mb-4">🔒</div>
+                  <h3 class="text-xl font-bold mb-2">Paiement Sécurisé</h3>
+                  <p class="text-gray-600">Vos transactions sont sécurisées avec nos systèmes de sécurité avancés.</p>
+              </div>
+              <div class="bg-white p-8 sm:p-12 md:p-24 rounded-lg shadow-lg text-center">
+                  <div class="text-red-500 text-4xl mb-4">💬</div>
+                  <h3 class="text-xl font-bold mb-2">Support 24/7</h3>
+                  <p class="text-gray-600">Nous sommes là pour vous aider à tout moment avec notre équipe de support dédiée.</p>
+              </div>
+          </div>
+      </div>
+  </section>
+
+  <!-- Section Appel à l'Action -->
+  <section class="bg-orange-600 py-8 sm:py-12 md:py-16 text-white">
+      <div class="container mx-auto px-4 sm:px-6 md:px-6 text-center">
+          <h2 class="text-3xl font-bold mb-4">Prêt à commencer ?</h2>
+          <p class="text-lg mb-8">Rejoignez des milliers de clients satisfaits dès aujourd'hui.</p>
+          <button [routerLink]="['/authentication/register']" class="bg-white text-orange-600 px-6 py-3 rounded-full font-bold">Registre</button>
+      </div>
+  </section>
+</main>
+
+<footer class="bg-gray-800 text-white py-6">
+  <div class="container mx-auto text-center">
+      <p>&copy; 2024 Chronopack. Tous droits réservés.</p>
+  </div>
+</footer>

@@ -1,92 +1,82 @@
-<div class="blank-layout-container justify-content-center align-items-center bg-light-primary">
-  <div
-    class="position-relative row w-100 h-100 bg-gredient justify-content-center"
-  >
-    <div class="col-lg-4 d-flex align-items-center">
-      <mat-card class="cardWithShadow boxed-auth">
-        <mat-card-content class="p-32">
-          <div class="text-center">
-            <a [routerLink]="['/dashboard']">
-              <img
-                src="./assets/images/logos/dark-logo.svg"
-                class="align-middle m-2"
-                alt="logo"
-              />
-            </a>
-          </div>
+<app-topnav></app-topnav>
+  <div class="grid grid-cols-1 h-full   w-full"  style="background-color: #1B212A !important; height: 90%;">
 
-          <div class="row m-t-24 custom-row">
-            <div class="col-12 col-sm-6">
-              <button mat-stroked-button class="w-100">
-                <div class="d-flex align-items-center">
-                  <img
-                    src="/assets/images/svgs/google-icon.svg"
-                    alt="google"
-                    width="16"
-                    class="m-r-8"
-                  />
-                  Sign in with Google
-                </div>
-              </button>
-            </div>
-            <div class="col-12 col-sm-6">
-              <button
-                mat-stroked-button
-                class="w-100 d-flex align-items-center"
-              >
-                <div class="d-flex align-items-center">
-                  <img
-                    src="/assets/images/svgs/facebook-icon.svg"
-                    alt="facebook"
-                    width="40"
-                    class="m-r-4"
-                  />
-                  Sign in with FB
-                </div>
-              </button>
+
+    <!-- Second column (form) -->
+     <div class="flex flex-col justify-center items-center bg-light-primary" style="background-color: rgb(245, 245, 245) !important;">
+          <div class="text-left mb-8">
+            <div class="branding" style="padding-left: 0px !important;">
+
+              <a href="/">
+                <img
+                  src="./assets/images/logos/logo.png"
+                  class="align-middle m-2 h-16 w-auto "
+                  alt="logo"
+                />
+              </a>
+
+
             </div>
           </div>
 
-          <div class="or-border m-t-30">or sign up with</div>
-
-          <form class="m-t-30">
-            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block"
-              >Name</mat-label
-            >
+          <form class="md:w-1/3 w-full p-12" [formGroup]="userForm" (ngSubmit)="onSubmit()">
+            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Nom d'utilisateur</mat-label>
             <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput />
+              <input matInput formControlName="username" />
             </mat-form-field>
-            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block"
-              >Email Adddress</mat-label
-            >
+            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Email</mat-label>
             <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput type="email" />
+              <input matInput formControlName="email" />
             </mat-form-field>
             <!-- password -->
-            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block"
-              >Password</mat-label
-            >
+            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Mot de passe</mat-label>
             <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput type="password" />
+              <input matInput type="password" formControlName="password" />
             </mat-form-field>
+            <div class=" flex flex-col ">
+              <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Dépôt</mat-label>
+              <mat-form-field appearance="outline"  class="mt-3 w-100 ">
+                <mat-select placeholder="dépôt" formControlName="depotId"  >
+                  <mat-option placeholder="dépôt" *ngFor="let depot of depots"  [value]="depot.depot_id">{{depot.depot_name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
 
-            <a [routerLink]="['/']" mat-flat-button color="primary" class="w-100">
-              Sign Up
-            </a>
-            <!-- input -->
+            </div>
+            <div *ngIf="error" class="flex items-center px-4 mb-4 py-4 text-sm text-red-800 rounded-lg bg-red-50 "
+              role="alert">
+              <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+              </svg>
+              <span class="sr-only">Info</span>
+              <div>
+                {{error_message}}
+              </div>
+            </div>
+            <!--
+            <div class="d-flex align-items-center m-b-12">
+              <mat-checkbox color="primary">Remember this Device</mat-checkbox>
+              <a [routerLink]="['/']" class="text-primary f-w-600 text-decoration-none m-l-auto f-s-14">Forgot Password ?</a>
+            </div>
+-->
+<button style="background-color: #FC7301;" type="submit" class="w-100" mat-flat-button color="primary">
+        <div  class="w-100 flex flex-row items-center justify-center space-x-2">
+          <mat-progress-spinner *ngIf="loading" mode="indeterminate" diameter="16" color="accent"
+          class="self-center"></mat-progress-spinner>
+<div>Register</div>
+        </div>
+
+</button>
+
+
           </form>
-          <span class="d-block f-w-500 text-center m-t-24"
-            >Already have an Account?
 
-            <a
-              [routerLink]="['/authentication/login']"
-              class="text-decoration-none text-primary f-w-500 f-s-14"
-            >
-              Sign In</a
-            >
-          </span>
-        </mat-card-content>
-      </mat-card>
-    </div>
+
+
+        </div>
+            <!-- First column (image) -->
+
+
   </div>
-</div>
+

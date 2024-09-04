@@ -45,4 +45,18 @@ export class UserService {
         })
       );
   }
+
+  register(user: any): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+    });
+    return this.http.post<any>(`${this.appConfigService.getBaseUrl()}/api/auth/signup`, user, { headers })
+      .pipe(
+        catchError(error => {
+          // Handle errors
+          console.error('Error creating user:', error);
+          throw error;
+        })
+      );
+  }
 }
